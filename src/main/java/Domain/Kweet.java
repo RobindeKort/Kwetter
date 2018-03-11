@@ -10,7 +10,7 @@ import java.util.Set;
  *
  * @author Robin
  */
-class Kweet implements Comparable<Kweet> {
+public class Kweet implements Comparable<Kweet> {
     private Long id;
     private Calendar datePosted;
     private String body;

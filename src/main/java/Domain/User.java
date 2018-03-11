@@ -8,7 +8,7 @@ import java.util.Set;
  *
  * @author Robin
  */
-class User implements Comparable<User> {
+public class User implements Comparable<User> {
     private Long id;
     private String userName;
     private String password;
