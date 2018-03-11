@@ -5,9 +5,9 @@ import javax.ws.rs.core.Application;
 
 /**
  *
- * @author ievans
+ * @author Robin
  */
 @ApplicationPath("/")
-public class HelloApplication extends Application {
+public class KwetterApplication extends Application {
 
 }
