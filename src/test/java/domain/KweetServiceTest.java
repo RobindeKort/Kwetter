@@ -1,5 +1,7 @@
-package Domain;
+package domain;
 
+import domain.User;
+import domain.Kweet;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.PriorityQueue;
@@ -12,7 +14,7 @@ import static org.junit.Assert.*;
  *
  * @author Robin
  */
-public class KweetTest {
+public class KweetServiceTest {
     final int kweetCount = 10;
     Queue<Kweet> kweets;
     

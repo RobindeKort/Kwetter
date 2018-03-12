@@ -1,4 +1,4 @@
-package Domain;
+package domain;
 
 import java.util.Calendar;
 import java.util.Collections;

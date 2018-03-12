@@ -1,4 +1,4 @@
-package Domain;
+package domain;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -67,6 +67,11 @@ public class User implements Comparable<User> {
         this.userName = userName;
     }
 
+    /**
+     * Check if the given password matches the current password. 
+     * @param password string that gets compared to current password. 
+     * @return true if the strings match, false otherwise. 
+     */
     public boolean checkPassword(String password) {
         if (this.password.equals(password)) {
             return true;
@@ -74,6 +79,12 @@ public class User implements Comparable<User> {
         return false;
     }
 
+    /**
+     * Update the user's password if the old password matches. 
+     * @param oldPassword string that has to match the current password. 
+     * @param newPassword string to which the password will be changed. 
+     * @return true if the password has been changed, false otherwise. 
+     */
     public boolean setPassword(String oldPassword, String newPassword) {
         if (this.password.equals(oldPassword)) {
             this.password = newPassword;
@@ -145,24 +156,15 @@ public class User implements Comparable<User> {
     public void setRole(Role role) {
         this.role = role;
     }
-    
-    public void addFollowedBy(User following) {
-        this.followedBy.add(following);
-    }
 
     public void follow(User toFollow) {
         this.following.add(toFollow);
-        toFollow.addFollowedBy(this);
-    }
-    
-    public void removeFollowedBy(User unfollowing) {
-        this.followedBy.remove(unfollowing);
     }
 
     public void unfollow(User toUnfollow) {
         this.following.remove(toUnfollow);
-        toUnfollow.removeFollowedBy(this);
     }
+    
     
     public int getFollowingCount() {
         return following.size();
@@ -170,6 +172,13 @@ public class User implements Comparable<User> {
 
     public Set<User> getFollowing() {
         return Collections.unmodifiableSet(following);
+    }
+    public void addFollowedBy(User following) {
+        this.followedBy.add(following);
+    }
+    
+    public void removeFollowedBy(User unfollowing) {
+        this.followedBy.remove(unfollowing);
     }
     
     public int getFollowedByCount() {
@@ -184,16 +193,16 @@ public class User implements Comparable<User> {
         kweets.add(kweet);
     }
     
+    public void removeKweet(Kweet kweet) {
+        kweets.remove(kweet);
+    }
+    
     public int getKweetCount() {
         return kweets.size();
     }
 
     public Set<Kweet> getKweets() {
         return Collections.unmodifiableSet(kweets);
-    }
-
-    public void setKweets(Set<Kweet> kweets) {
-        this.kweets = kweets;
     }
 
     @Override

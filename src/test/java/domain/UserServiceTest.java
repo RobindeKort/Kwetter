@@ -1,5 +1,7 @@
-package Domain;
+package domain;
 
+import domain.User;
+import domain.Kweet;
 import java.util.HashSet;
 import java.util.PriorityQueue;
 import java.util.Queue;
@@ -12,7 +14,7 @@ import static org.junit.Assert.*;
  *
  * @author Robin
  */
-public class UserTest {
+public class UserServiceTest {
     final int userCount = 10;
     Queue<User> users;
     
@@ -29,14 +31,12 @@ public class UserTest {
      */
     @Test
     public void testGetSetKweets() {
-        Set<Kweet> kweets = new HashSet();
+        User u = users.peek();
         Kweet kweet1 = new Kweet("test kweet 1");
         Kweet kweet2 = new Kweet("test kweet 2");
-        kweets.add(kweet1);
-        kweets.add(kweet2);
+        u.addKweet(kweet1);
+        u.addKweet(kweet2);
         
-        User u = users.peek();
-        u.setKweets(kweets);
         assertTrue(u.getKweets().contains(kweet1));
         assertTrue(u.getKweets().contains(kweet2));
     }
