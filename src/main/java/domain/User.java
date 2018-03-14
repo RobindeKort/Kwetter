@@ -3,13 +3,27 @@ package domain;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 /**
  *
  * @author Robin
  */
+@Entity
+@Table
 public class User implements Comparable<User> {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Column(unique=true)
     private String userName;
     private String password;
     private String email;
@@ -19,11 +33,25 @@ public class User implements Comparable<User> {
     private String bio;
     private String location;
     private String website;
+    @Enumerated(EnumType.STRING)
     private Role role;
     
     private Set<User> following;
     private Set<User> followedBy;
+    @OneToMany(mappedBy="postedBy")
     private Set<Kweet> kweets;
+    
+    private void initCollections() {
+        if (following == null) {
+            following = new HashSet();
+        }
+        if (followedBy == null) {
+            followedBy = new HashSet();
+        }
+        if (kweets == null) {
+            kweets = new HashSet();
+        }
+    }
     
     public User() {
         // Nothing
@@ -50,13 +78,15 @@ public class User implements Comparable<User> {
         this.location = location;
         this.website = website;
         this.role = Role.User;
-        this.following = new HashSet();
-        this.followedBy = new HashSet();
-        this.kweets = new HashSet();
+        initCollections();
     }
 
     public Long getId() {
         return id;
+    }
+    
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getUserName() {
@@ -73,7 +103,7 @@ public class User implements Comparable<User> {
      * @return true if the strings match, false otherwise. 
      */
     public boolean checkPassword(String password) {
-        if (this.password.equals(password)) {
+        if (this.password != null && this.password.equals(password)) {
             return true;
         }
         return false;
@@ -158,50 +188,68 @@ public class User implements Comparable<User> {
     }
 
     public void follow(User toFollow) {
+        initCollections();
+        if (toFollow.getUserName().equals(this.getUserName())) {
+            return;
+        }
         this.following.add(toFollow);
     }
 
     public void unfollow(User toUnfollow) {
+        initCollections();
         this.following.remove(toUnfollow);
     }
     
     
     public int getFollowingCount() {
+        initCollections();
         return following.size();
     }
 
     public Set<User> getFollowing() {
+        initCollections();
         return Collections.unmodifiableSet(following);
     }
     public void addFollowedBy(User following) {
+        initCollections();
+        if (following.getUserName().equals(this.getUserName())) {
+            return;
+        }
         this.followedBy.add(following);
     }
     
     public void removeFollowedBy(User unfollowing) {
+        initCollections();
         this.followedBy.remove(unfollowing);
     }
     
     public int getFollowedByCount() {
+        initCollections();
         return followedBy.size();
     }
 
     public Set<User> getFollowedBy() {
+        initCollections();
         return Collections.unmodifiableSet(followedBy);
     }
     
     public void addKweet(Kweet kweet) {
+        initCollections();
         kweets.add(kweet);
     }
     
     public void removeKweet(Kweet kweet) {
+        initCollections();
         kweets.remove(kweet);
     }
     
     public int getKweetCount() {
+        initCollections();
         return kweets.size();
     }
 
     public Set<Kweet> getKweets() {
+        initCollections();
         return Collections.unmodifiableSet(kweets);
     }
 
