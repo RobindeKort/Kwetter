@@ -7,7 +7,7 @@ import javax.ws.rs.core.Application;
  *
  * @author Robin
  */
-@ApplicationPath("/")
+@ApplicationPath("api")
 public class KwetterApplication extends Application {
 
 }

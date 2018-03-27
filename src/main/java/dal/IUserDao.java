@@ -2,6 +2,7 @@ package dal;
 
 import domain.Kweet;
 import domain.User;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -14,7 +15,7 @@ public interface IUserDao {
     void removeUser(User user);
     User getUser(Long id);
     User getUserByUserName(String name);
-    Set<User> getUsersByUserName(String partialName);
+    List<User> getUsersByUserName(String partialName);
     //Set<User> getFollowers(Long id);
     //Set<Kweet> getFollowingKweets(User user, int amount);
 }

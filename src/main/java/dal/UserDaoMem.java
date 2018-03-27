@@ -2,7 +2,9 @@ package dal;
 
 import domain.Kweet;
 import domain.User;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -54,13 +56,13 @@ public class UserDaoMem implements IUserDao {
     }
 
     @Override
-    public Set<User> getUsersByUserName(String partialName) {
-        Set<User> userSet = new TreeSet();
+    public List<User> getUsersByUserName(String partialName) {
+        List<User> userList = new ArrayList();
         for (Map.Entry<Long, User> entry : users.entrySet()) {
             if (entry.getValue().getUserName().toLowerCase().contains(partialName.toLowerCase())) {
-                userSet.add(entry.getValue());
+                userList.add(entry.getValue());
             }
         }
-        return userSet;
+        return userList;
     }
 }

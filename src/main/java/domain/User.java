@@ -10,6 +10,9 @@ import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinTable;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -18,12 +21,19 @@ import javax.persistence.Table;
  * @author Robin
  */
 @Entity
-@Table
+@Table(name = "user")
+@NamedQueries({
+    @NamedQuery(name = "User.findUserByUserName",
+            query = "SELECT u FROM User u WHERE u.userName = :username"),
+    @NamedQuery(name = "User.findUsersByUserName",
+            query = "SELECT u FROM User u WHERE u.userName LIKE CONCAT('%', :username, '%')")
+})
 public class User implements Comparable<User> {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique=true)
+    @Column(unique = true)
     private String userName;
     private String password;
     private String email;
@@ -35,12 +45,14 @@ public class User implements Comparable<User> {
     private String website;
     @Enumerated(EnumType.STRING)
     private Role role;
-    
+
+    @OneToMany @JoinTable( name = "user_following")
     private Set<User> following;
+    @OneToMany @JoinTable( name = "user_followedBy")
     private Set<User> followedBy;
-    @OneToMany(mappedBy="postedBy")
+    @OneToMany(mappedBy = "postedBy")
     private Set<Kweet> kweets;
-    
+
     private void initCollections() {
         if (following == null) {
             following = new HashSet();
@@ -52,22 +64,22 @@ public class User implements Comparable<User> {
             kweets = new HashSet();
         }
     }
-    
+
     public User() {
         // Nothing
     }
-    
+
     public User(String userName) {
         this(userName, "password");
     }
-    
+
     public User(String userName, String password) {
         this(userName, password, "", "", "", "", "", "", "");
     }
-    
+
     public User(String userName, String password, String email, String picturePath,
-                String firstName, String lastName, String bio, String location, 
-                String website) {
+            String firstName, String lastName, String bio, String location,
+            String website) {
         this.userName = userName;
         this.password = password;
         this.email = email;
@@ -84,7 +96,7 @@ public class User implements Comparable<User> {
     public Long getId() {
         return id;
     }
-    
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -98,9 +110,10 @@ public class User implements Comparable<User> {
     }
 
     /**
-     * Check if the given password matches the current password. 
-     * @param password string that gets compared to current password. 
-     * @return true if the strings match, false otherwise. 
+     * Check if the given password matches the current password.
+     *
+     * @param password string that gets compared to current password.
+     * @return true if the strings match, false otherwise.
      */
     public boolean checkPassword(String password) {
         if (this.password != null && this.password.equals(password)) {
@@ -110,10 +123,11 @@ public class User implements Comparable<User> {
     }
 
     /**
-     * Update the user's password if the old password matches. 
-     * @param oldPassword string that has to match the current password. 
-     * @param newPassword string to which the password will be changed. 
-     * @return true if the password has been changed, false otherwise. 
+     * Update the user's password if the old password matches.
+     *
+     * @param oldPassword string that has to match the current password.
+     * @param newPassword string to which the password will be changed.
+     * @return true if the password has been changed, false otherwise.
      */
     public boolean setPassword(String oldPassword, String newPassword) {
         if (this.password.equals(oldPassword)) {
@@ -178,11 +192,11 @@ public class User implements Comparable<User> {
     public void setWebsite(String website) {
         this.website = website;
     }
-    
+
     public Role getRole() {
         return role;
     }
-    
+
     public void setRole(Role role) {
         this.role = role;
     }
@@ -199,8 +213,7 @@ public class User implements Comparable<User> {
         initCollections();
         this.following.remove(toUnfollow);
     }
-    
-    
+
     public int getFollowingCount() {
         initCollections();
         return following.size();
@@ -210,6 +223,7 @@ public class User implements Comparable<User> {
         initCollections();
         return Collections.unmodifiableSet(following);
     }
+
     public void addFollowedBy(User following) {
         initCollections();
         if (following.getUserName().equals(this.getUserName())) {
@@ -217,12 +231,12 @@ public class User implements Comparable<User> {
         }
         this.followedBy.add(following);
     }
-    
+
     public void removeFollowedBy(User unfollowing) {
         initCollections();
         this.followedBy.remove(unfollowing);
     }
-    
+
     public int getFollowedByCount() {
         initCollections();
         return followedBy.size();
@@ -232,17 +246,17 @@ public class User implements Comparable<User> {
         initCollections();
         return Collections.unmodifiableSet(followedBy);
     }
-    
+
     public void addKweet(Kweet kweet) {
         initCollections();
         kweets.add(kweet);
     }
-    
+
     public void removeKweet(Kweet kweet) {
         initCollections();
         kweets.remove(kweet);
     }
-    
+
     public int getKweetCount() {
         initCollections();
         return kweets.size();

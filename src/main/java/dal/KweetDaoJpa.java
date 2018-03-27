@@ -1,8 +1,11 @@
 package dal;
 
 import domain.Kweet;
+import javax.ejb.Stateless;
+import javax.enterprise.inject.Default;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.QueryTimeoutException;
 import javax.persistence.RollbackException;
 
@@ -10,13 +13,20 @@ import javax.persistence.RollbackException;
  *
  * @author Robin
  */
+@Stateless
+@Default
 public class KweetDaoJpa implements IKweetDao {
-    private final EntityManager em;
-    
-    public KweetDaoJpa(EntityManager em) {
-        this.em = em;
+
+    @PersistenceContext(unitName = "Kwet_JPA")
+    private EntityManager em;
+
+    public KweetDaoJpa() {
     }
-    
+
+//    public KweetDaoJpa(EntityManager em) {
+//        this.em = em;
+//    }
+
     /**
      * The entity is persisted. If an entity with the same primary key already
      * exists, an EntityExistsException is thrown.
@@ -89,7 +99,7 @@ public class KweetDaoJpa implements IKweetDao {
             throw iae;
         }
     }
-    
+
     /**
      * Find the entity instance that matches the given primary key value.
      *

@@ -1,9 +1,13 @@
 package dal;
 
 import domain.User;
-import java.util.Set;
+import java.util.List;
+import javax.ejb.Stateless;
+import javax.enterprise.inject.Default;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.QueryTimeoutException;
 import javax.persistence.RollbackException;
@@ -12,13 +16,20 @@ import javax.persistence.RollbackException;
  *
  * @author Robin
  */
+@Stateless
+@Default
 public class UserDaoJpa implements IUserDao {
-    private final EntityManager em;
-    
-    public UserDaoJpa(EntityManager em) {
-        this.em = em;
+
+    @PersistenceContext(unitName = "Kwet_JPA")
+    private EntityManager em;
+
+    public UserDaoJpa() {
     }
-    
+
+//    public UserDaoJpa(EntityManager em) {
+//        this.em = em;
+//    }
+
     /**
      * The entity is persisted. If an entity with the same primary key already
      * exists, an EntityExistsException is thrown.
@@ -33,9 +44,9 @@ public class UserDaoJpa implements IUserDao {
     @Override
     public void createUser(User user) throws IllegalArgumentException, RollbackException, EntityExistsException {
         try {
-            em.getTransaction().begin();
+            //em.getTransaction().begin();
             em.persist(user);
-            em.getTransaction().commit();
+            //em.getTransaction().commit();
         } catch (IllegalStateException ise) {
             handleExceptions(ise);
         } catch (IllegalArgumentException iae) {
@@ -44,7 +55,7 @@ public class UserDaoJpa implements IUserDao {
         } catch (RollbackException rbe) {
             throw rbe;
         } catch (EntityExistsException eee) {
-            em.getTransaction().rollback();
+            //em.getTransaction().rollback();
             throw eee;
         }
     }
@@ -60,13 +71,13 @@ public class UserDaoJpa implements IUserDao {
     @Override
     public void updateUser(User user) throws IllegalArgumentException {
         try {
-            em.getTransaction().begin();
+            //em.getTransaction().begin();
             em.merge(user);
-            em.getTransaction().commit();
+            //em.getTransaction().commit();
         } catch (IllegalStateException ise) {
             handleExceptions(ise);
         } catch (IllegalArgumentException iae) {
-            em.getTransaction().rollback();
+            //em.getTransaction().rollback();
             throw iae;
         }
     }
@@ -81,17 +92,17 @@ public class UserDaoJpa implements IUserDao {
     @Override
     public void removeUser(User user) throws IllegalArgumentException {
         try {
-            em.getTransaction().begin();
+            //em.getTransaction().begin();
             em.remove(user);
-            em.getTransaction().commit();
+            //em.getTransaction().commit();
         } catch (IllegalStateException ise) {
             handleExceptions(ise);
         } catch (IllegalArgumentException iae) {
-            em.getTransaction().rollback();
+            //em.getTransaction().rollback();
             throw iae;
         }
     }
-    
+
     /**
      * Find the entity instance that matches the given primary key value.
      *
@@ -102,13 +113,13 @@ public class UserDaoJpa implements IUserDao {
     public User getUser(Long id) throws IllegalArgumentException, NullPointerException {
         User ret = null;
         try {
-            em.getTransaction().begin();
+            //em.getTransaction().begin();
             ret = em.find(User.class, id);
-            em.getTransaction().commit();
+            //em.getTransaction().commit();
         } catch (IllegalStateException ise) {
             handleExceptions(ise);
         } catch (IllegalArgumentException iae) {
-            em.getTransaction().rollback();
+            //em.getTransaction().rollback();
             throw iae;
         }
         if (ret == null) {
@@ -119,12 +130,22 @@ public class UserDaoJpa implements IUserDao {
 
     @Override
     public User getUserByUserName(String name) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Query queryUserByUserName = em.createNamedQuery("User.findUserByUserName");
+        queryUserByUserName.setParameter("username", name);
+        try {
+            User user = (User) queryUserByUserName.getSingleResult();
+            return user;
+        } catch (NoResultException nre) {
+            return null;
+        }
     }
 
     @Override
-    public Set<User> getUsersByUserName(String partialName) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<User> getUsersByUserName(String partialName) {
+        Query queryUsersByUserName = em.createNamedQuery("User.findUsersByUserName");
+        queryUsersByUserName.setParameter("username", partialName);
+        List<User> users = queryUsersByUserName.getResultList();
+        return users;
     }
 
     /**
@@ -159,10 +180,10 @@ public class UserDaoJpa implements IUserDao {
             return;
         }
         try {
-            em.getTransaction().begin();
+            //em.getTransaction().begin();
             String entityName = em.getMetamodel().entity(User.class).getName();
             em.createQuery("delete from " + entityName).executeUpdate();
-            em.getTransaction().commit();
+            //em.getTransaction().commit();
         } catch (IllegalStateException ise) {
             handleExceptions(ise);
         } catch (RollbackException rbe) {
@@ -171,7 +192,7 @@ public class UserDaoJpa implements IUserDao {
             handleExceptions(qte);
         } catch (IllegalArgumentException iae) {
             System.out.println("The given DELETE query is invalid. ");
-            em.getTransaction().rollback();
+            //em.getTransaction().rollback();
         }
     }
 }

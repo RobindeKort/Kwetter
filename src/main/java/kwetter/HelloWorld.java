@@ -1,43 +1,56 @@
 package kwetter;
 
+import domain.*;
+import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
+import service.UserService;
 
-/**
- * Root resource (exposed at "Kwetterworld" path)
- */
-@Path("Kwetter")
+@Path("/users")
 public class HelloWorld {
+
+//    @Inject
+    private UserService userService;
+
     @Context
     private UriInfo context;
+    
+//    public HelloWorld() {
+//        
+//    }
 
-    /** Creates a new instance of HelloWorld */
-    public HelloWorld() {
+    @Inject
+    public HelloWorld(UserService userService) {
+        this.userService = userService;
     }
 
-    /**
-     * Retrieves representation of an instance of KwetterWorld.HelloWorld
-     * @return an instance of java.lang.String
-     */
     @GET
-    @Produces("text/html")
-    public String getHtml() {
-        //TODO replace with your own HTML
-        return "<html><head><title>Hello there</title></head><body><h1>Hello!</h1></body></html>";
+    @Path("{userName}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public User getUser(@PathParam("userName") String userName) {
+        User u = userService.getUser(userName);
+        return u;
     }
 
-    /**
-     * PUT method for updating or creating an instance of HelloWorld
-     * @param content representation for the resource
-     * @return an HTTP response with content of the updated or created resource.
-     */
-    @PUT
-    @Consumes("text/html")
-    public void putHtml(String content) {
+    @POST
+    @Path("")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response postUser(User user) {
+        if (user != null) {
+            userService.createUser(user);
+        }
+        String result = user.getUserName();
+        return Response.status(Status.OK).entity(result).build();
     }
 }
