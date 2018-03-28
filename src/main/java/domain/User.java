@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -36,6 +37,7 @@ public class User implements Comparable<User> {
     @Column(unique = true)
     private String userName;
     private String password;
+    @Column(unique = true)
     private String email;
     private String picturePath;
     private String firstName;
@@ -46,11 +48,11 @@ public class User implements Comparable<User> {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany @JoinTable( name = "user_following")
+    @OneToMany(fetch = FetchType.LAZY) @JoinTable(name = "user_following")
     private Set<User> following;
-    @OneToMany @JoinTable( name = "user_followedBy")
+    @OneToMany(fetch = FetchType.LAZY) @JoinTable(name = "user_followedBy")
     private Set<User> followedBy;
-    @OneToMany(mappedBy = "postedBy")
+    @OneToMany(mappedBy = "postedBy", fetch = FetchType.LAZY)
     private Set<Kweet> kweets;
 
     private void initCollections() {
