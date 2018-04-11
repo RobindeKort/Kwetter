@@ -3,6 +3,7 @@ package domain;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -12,24 +13,27 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import org.apache.commons.codec.digest.DigestUtils;
 
 /**
  *
  * @author Robin
  */
 @Entity
-@Table(name = "user")
+@Table
 @NamedQueries({
-    @NamedQuery(name = "User.findUserByUserName",
-            query = "SELECT u FROM User u WHERE u.userName = :username"),
-    @NamedQuery(name = "User.findUsersByUserName",
-            query = "SELECT u FROM User u WHERE u.userName LIKE CONCAT('%', :username, '%')")
+    @NamedQuery(name = "Account.findAccountByUserName",
+            query = "SELECT a FROM Account a WHERE a.userName = :username")
+    ,
+    @NamedQuery(name = "Account.findAccountsByUserName",
+            query = "SELECT a FROM Account a WHERE a.userName LIKE CONCAT('%', :username, '%')")
 })
-public class User implements Comparable<User> {
+public class Account implements Comparable<Account> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -45,45 +49,51 @@ public class User implements Comparable<User> {
     private String bio;
     private String location;
     private String website;
-    @Enumerated(EnumType.STRING)
-    private Role role;
+    @ManyToMany(mappedBy = "accounts", cascade = CascadeType.PERSIST)
+    private Set<UserGroup> groups = new HashSet();
 
-    @OneToMany(fetch = FetchType.LAZY) @JoinTable(name = "user_following")
-    private Set<User> following;
-    @OneToMany(fetch = FetchType.LAZY) @JoinTable(name = "user_followedBy")
-    private Set<User> followedBy;
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "account_following")
+    private Set<Account> following = new HashSet();
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "account_followedBy")
+    private Set<Account> followedBy = new HashSet();
     @OneToMany(mappedBy = "postedBy", fetch = FetchType.LAZY)
-    private Set<Kweet> kweets;
+    private Set<Kweet> kweets = new HashSet();
 
-    private void initCollections() {
-        if (following == null) {
-            following = new HashSet();
-        }
-        if (followedBy == null) {
-            followedBy = new HashSet();
-        }
-        if (kweets == null) {
-            kweets = new HashSet();
-        }
-    }
+//    private void initCollections() {
+//        if (groups == null) {
+//            groups = new HashSet();
+//            groups.add(new UserGroup("User"));
+//        }
+//        if (following == null) {
+//            following = new HashSet();
+//        }
+//        if (followedBy == null) {
+//            followedBy = new HashSet();
+//        }
+//        if (kweets == null) {
+//            kweets = new HashSet();
+//        }
+//    }
 
-    public User() {
+    public Account() {
         // Nothing
     }
 
-    public User(String userName) {
-        this(userName, "password");
+    public Account(String userName, String email, UserGroup group) {
+        this(userName, "password", email, group);
     }
 
-    public User(String userName, String password) {
-        this(userName, password, "", "", "", "", "", "", "");
+    public Account(String userName, String password, String email, UserGroup group) {
+        this(userName, password, email, "", "", "", "", "", "", group);
     }
 
-    public User(String userName, String password, String email, String picturePath,
+    public Account(String userName, String password, String email, String picturePath,
             String firstName, String lastName, String bio, String location,
-            String website) {
+            String website, UserGroup group) {
         this.userName = userName;
-        this.password = password;
+        this.password = DigestUtils.sha256Hex(password);
         this.email = email;
         this.picturePath = picturePath;
         this.firstName = firstName;
@@ -91,8 +101,7 @@ public class User implements Comparable<User> {
         this.bio = bio;
         this.location = location;
         this.website = website;
-        this.role = Role.User;
-        initCollections();
+        addUserGroup(group);
     }
 
     public Long getId() {
@@ -118,7 +127,7 @@ public class User implements Comparable<User> {
      * @return true if the strings match, false otherwise.
      */
     public boolean checkPassword(String password) {
-        if (this.password != null && this.password.equals(password)) {
+        if (this.password != null && this.password.equals(DigestUtils.sha256Hex(password))) {
             return true;
         }
         return false;
@@ -132,8 +141,8 @@ public class User implements Comparable<User> {
      * @return true if the password has been changed, false otherwise.
      */
     public boolean setPassword(String oldPassword, String newPassword) {
-        if (this.password.equals(oldPassword)) {
-            this.password = newPassword;
+        if (this.password.equals(DigestUtils.sha256Hex(oldPassword))) {
+            this.password = DigestUtils.sha256Hex(newPassword);
             return true;
         }
         return false;
@@ -194,83 +203,104 @@ public class User implements Comparable<User> {
     public void setWebsite(String website) {
         this.website = website;
     }
-
-    public Role getRole() {
-        return role;
+    
+    public Set<UserGroup> getGroups() {
+        return this.groups;
     }
-
-    public void setRole(Role role) {
-        this.role = role;
+    
+    public UserGroup getHighestGroup() {
+        UserGroup highestGroup = new UserGroup("User");
+        for (UserGroup g : groups) {
+            if (g.compareTo(highestGroup) > 0) {
+                highestGroup = g;
+            }
+        }
+        return highestGroup;
     }
+    
+    public void addUserGroup(UserGroup group) {
+        if (group == null || groups.contains(group)) {
+            return;
+        }
+        groups.add(group);
+        group.addAccount(this);
+    }
+    
+//    public Account promote() {
+//        UserGroup highestGroup = getHighestGroup();
+//        if (highestGroup.getGroupName().equals("User")) {
+//            groups.add(new UserGroup("Moderator"));
+//        }
+//        else if (highestGroup.getGroupName().equals("Moderator")) {
+//            groups.add(new UserGroup("Administrator"));
+//        }
+//        return this;
+//    }
+//    
+//    public Account demote() {
+//        UserGroup highestGroup = getHighestGroup();
+//        if (!highestGroup.getGroupName().equals("User")) {
+//            groups.remove(highestGroup);
+//        }
+//        return this;
+//    }
 
-    public void follow(User toFollow) {
-        initCollections();
+    public void follow(Account toFollow) {
         if (toFollow.getUserName().equals(this.getUserName())) {
             return;
         }
         this.following.add(toFollow);
     }
 
-    public void unfollow(User toUnfollow) {
-        initCollections();
+    public void unfollow(Account toUnfollow) {
         this.following.remove(toUnfollow);
     }
 
     public int getFollowingCount() {
-        initCollections();
         return following.size();
     }
 
-    public Set<User> getFollowing() {
-        initCollections();
+    public Set<Account> getFollowing() {
         return Collections.unmodifiableSet(following);
     }
 
-    public void addFollowedBy(User following) {
-        initCollections();
+    public void addFollowedBy(Account following) {
         if (following.getUserName().equals(this.getUserName())) {
             return;
         }
         this.followedBy.add(following);
     }
 
-    public void removeFollowedBy(User unfollowing) {
-        initCollections();
+    public void removeFollowedBy(Account unfollowing) {
         this.followedBy.remove(unfollowing);
     }
 
     public int getFollowedByCount() {
-        initCollections();
         return followedBy.size();
     }
 
-    public Set<User> getFollowedBy() {
-        initCollections();
+    public Set<Account> getFollowedBy() {
         return Collections.unmodifiableSet(followedBy);
     }
 
     public void addKweet(Kweet kweet) {
-        initCollections();
         kweets.add(kweet);
     }
 
     public void removeKweet(Kweet kweet) {
-        initCollections();
         kweets.remove(kweet);
     }
 
     public int getKweetCount() {
-        initCollections();
         return kweets.size();
     }
 
     public Set<Kweet> getKweets() {
-        initCollections();
         return Collections.unmodifiableSet(kweets);
     }
 
     @Override
-    public int compareTo(User other) {
+    public int compareTo(Account other) {
         return this.userName.compareTo(other.userName);
     }
 }

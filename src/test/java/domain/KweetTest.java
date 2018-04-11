@@ -25,16 +25,16 @@ public class KweetTest {
         assertEquals(instance.getDatePosted(), null);
         assertEquals(instance.getPostedBy(), null);
         assertEquals(instance.getBody(), null);
-        assertEquals(instance.getMentions(), Collections.unmodifiableSet(new HashSet<User>()));
+        assertEquals(instance.getMentions(), Collections.unmodifiableSet(new HashSet<Account>()));
         assertEquals(instance.getLikeCount(), 0);
-        assertEquals(instance.getLikedBy(), Collections.unmodifiableSet(new HashSet<User>()));
+        assertEquals(instance.getLikedBy(), Collections.unmodifiableSet(new HashSet<Account>()));
     }
     
     @Test
     public void testConstructorFull() {
         System.out.println("constructorFull");
-        User user = new User();
-        Set<User> mentions = new HashSet();
+        Account user = new Account();
+        Set<Account> mentions = new HashSet();
         Kweet instance = new Kweet(user, "asdf", mentions);
         Calendar cal = new GregorianCalendar();
         assertEquals(instance.getId(), null);
@@ -45,7 +45,7 @@ public class KweetTest {
         assertEquals(instance.getBody(), "asdf");
         assertEquals(instance.getMentions(), Collections.unmodifiableSet(mentions));
         assertEquals(instance.getLikeCount(), 0);
-        assertEquals(instance.getLikedBy(), Collections.unmodifiableSet(new HashSet<User>()));
+        assertEquals(instance.getLikedBy(), Collections.unmodifiableSet(new HashSet<Account>()));
     }
     
     @Test
@@ -61,7 +61,7 @@ public class KweetTest {
     @Test
     public void testLikeUnlike() {
         System.out.println("likeUnlike");
-        User user = new User();
+        Account user = new Account();
         Kweet instance = new Kweet();
         int expResult = 0;
         int result = instance.getLikeCount();

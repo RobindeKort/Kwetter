@@ -15,13 +15,13 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
-import service.UserService;
+import service.AccountService;
 
 @Path("/users")
 public class HelloWorld {
 
 //    @Inject
-    private UserService userService;
+    private AccountService accountService;
 
     @Context
     private UriInfo context;
@@ -31,26 +31,26 @@ public class HelloWorld {
 //    }
 
     @Inject
-    public HelloWorld(UserService userService) {
-        this.userService = userService;
+    public HelloWorld(AccountService accountService) {
+        this.accountService = accountService;
     }
 
     @GET
     @Path("{userName}")
     @Produces(MediaType.APPLICATION_JSON)
-    public User getUser(@PathParam("userName") String userName) {
-        User u = userService.getUser(userName);
+    public Account getAccount(@PathParam("userName") String userName) {
+        Account u = accountService.getAccount(userName);
         return u;
     }
 
     @POST
     @Path("")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response postUser(User user) {
-        if (user != null) {
-            userService.createUser(user);
+    public Response postAccount(Account account) {
+        if (account != null) {
+            accountService.createAccount(account);
         }
-        String result = user.getUserName();
+        String result = account.getUserName();
         return Response.status(Status.OK).entity(result).build();
     }
 }

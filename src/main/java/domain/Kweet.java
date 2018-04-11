@@ -29,11 +29,11 @@ public class Kweet implements Serializable, Comparable<Kweet> {
     @Temporal(TemporalType.TIMESTAMP)
     private Calendar datePosted;
     @ManyToOne(fetch=FetchType.LAZY)
-    private User postedBy;
+    private Account postedBy;
     private String body;
     
-    private Set<User> mentions;
-    private Set<User> likedBy;
+    private Set<Account> mentions;
+    private Set<Account> likedBy;
     
     private void initCollections() {
         if (mentions == null) {
@@ -48,11 +48,11 @@ public class Kweet implements Serializable, Comparable<Kweet> {
         // Nothing
     }
     
-    public Kweet(User postedBy, String body) {
+    public Kweet(Account postedBy, String body) {
         this(postedBy, body, new HashSet());
     }
     
-    public Kweet(User postedBy, String body, Set<User> mentions) {
+    public Kweet(Account postedBy, String body, Set<Account> mentions) {
         this.datePosted = new GregorianCalendar();
         this.postedBy = postedBy;
         this.body = body;
@@ -72,7 +72,7 @@ public class Kweet implements Serializable, Comparable<Kweet> {
         return datePosted;
     }
 
-    public User getPostedBy() {
+    public Account getPostedBy() {
         return postedBy;
     }
     
@@ -80,17 +80,17 @@ public class Kweet implements Serializable, Comparable<Kweet> {
         return body;
     }
     
-    public Set<User> getMentions() {
+    public Set<Account> getMentions() {
         initCollections();
         return Collections.unmodifiableSet(mentions);
     }
 
-    public void like(User user) {
+    public void like(Account user) {
         initCollections();
         likedBy.add(user);
     }
 
-    public void unlike(User user) {
+    public void unlike(Account user) {
         initCollections();
         likedBy.remove(user);
     }
@@ -100,7 +100,7 @@ public class Kweet implements Serializable, Comparable<Kweet> {
         return likedBy.size();
     }
     
-    public Set<User> getLikedBy() {
+    public Set<Account> getLikedBy() {
         initCollections();
         return Collections.unmodifiableSet(likedBy);
     }

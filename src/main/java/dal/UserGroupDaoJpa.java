@@ -1,7 +1,8 @@
 package dal;
 
-import domain.User;
+import domain.UserGroup;
 import java.util.List;
+import java.util.Set;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityExistsException;
@@ -18,15 +19,15 @@ import javax.persistence.RollbackException;
  */
 @Stateless
 @Default
-public class UserDaoJpa implements IUserDao {
+public class UserGroupDaoJpa implements IUserGroupDao {
 
     @PersistenceContext(unitName = "Kwet_JPA")
     private EntityManager em;
 
-    public UserDaoJpa() {
+    public UserGroupDaoJpa() {
     }
 
-//    public UserDaoJpa(EntityManager em) {
+//    public UserGroupDaoJpa(EntityManager em) {
 //        this.em = em;
 //    }
 
@@ -34,7 +35,7 @@ public class UserDaoJpa implements IUserDao {
      * The entity is persisted. If an entity with the same primary key already
      * exists, an EntityExistsException is thrown.
      *
-     * @param user the object that is to be persisted in the database
+     * @param group the object that is to be persisted in the database
      * @throws IllegalArgumentException if the given object is not an entity
      * @throws RollbackException if an entity instance with the same primary key
      * already exists in the persistent context
@@ -42,10 +43,10 @@ public class UserDaoJpa implements IUserDao {
      * key already exists in the persistent context
      */
     @Override
-    public void createUser(User user) throws IllegalArgumentException, RollbackException, EntityExistsException {
+    public void createGroup(UserGroup group) throws IllegalArgumentException, RollbackException, EntityExistsException {
         try {
             //em.getTransaction().begin();
-            em.persist(user);
+            em.persist(group);
             //em.getTransaction().commit();
         } catch (IllegalStateException ise) {
             handleExceptions(ise);
@@ -61,39 +62,17 @@ public class UserDaoJpa implements IUserDao {
     }
 
     /**
-     * Merge the state of the given object into persistent context. If the
-     * entity does not exist, an IllegalArgumentException is thrown
-     *
-     * @param user the object that is to be merged into the persistent context
-     * @throws IllegalArgumentException if the given object is not an entity or
-     * is a removed entity
-     */
-    @Override
-    public void updateUser(User user) throws IllegalArgumentException {
-        try {
-            //em.getTransaction().begin();
-            em.merge(user);
-            //em.getTransaction().commit();
-        } catch (IllegalStateException ise) {
-            handleExceptions(ise);
-        } catch (IllegalArgumentException iae) {
-            //em.getTransaction().rollback();
-            throw iae;
-        }
-    }
-
-    /**
      * Remove the given entity instance
      *
-     * @param user the entity instance to remove from the persistent context
+     * @param group the entity instance to remove from the persistent context
      * @throws IllegalArgumentException if the given object is not an entity or
      * is a detached entity
      */
     @Override
-    public void removeUser(User user) throws IllegalArgumentException {
+    public void removeGroup(UserGroup group) throws IllegalArgumentException {
         try {
             //em.getTransaction().begin();
-            em.remove(user);
+            em.remove(group);
             //em.getTransaction().commit();
         } catch (IllegalStateException ise) {
             handleExceptions(ise);
@@ -110,11 +89,11 @@ public class UserDaoJpa implements IUserDao {
      * @return the found entity instance or null if the entity does not exist
      */
     @Override
-    public User getUser(Long id) throws IllegalArgumentException, NullPointerException {
-        User ret = null;
+    public UserGroup getGroup(String id) throws IllegalArgumentException, NullPointerException {
+        UserGroup ret = null;
         try {
             //em.getTransaction().begin();
-            ret = em.find(User.class, id);
+            ret = em.find(UserGroup.class, id);
             //em.getTransaction().commit();
         } catch (IllegalStateException ise) {
             handleExceptions(ise);
@@ -122,29 +101,13 @@ public class UserDaoJpa implements IUserDao {
             //em.getTransaction().rollback();
             throw iae;
         }
-        if (ret == null) {
-            throw new NullPointerException("Please provide a valid search term. ");
-        }
         return ret;
     }
 
     @Override
-    public User getUserByUserName(String name) {
-        Query queryUserByUserName = em.createNamedQuery("User.findUserByUserName");
-        queryUserByUserName.setParameter("username", name);
-        try {
-            User user = (User) queryUserByUserName.getSingleResult();
-            return user;
-        } catch (NoResultException nre) {
-            return null;
-        }
-    }
-
-    @Override
-    public List<User> getUsersByUserName(String partialName) {
-        Query queryUsersByUserName = em.createNamedQuery("User.findUsersByUserName");
-        queryUsersByUserName.setParameter("username", partialName);
-        List<User> users = queryUsersByUserName.getResultList();
+    public List<UserGroup> getAllGroups() {
+        Query queryUserGroupGetAll = em.createNamedQuery("UserGroup.getAll");
+        List<UserGroup> users = queryUserGroupGetAll.getResultList();
         return users;
     }
 
@@ -181,7 +144,7 @@ public class UserDaoJpa implements IUserDao {
         }
         try {
             //em.getTransaction().begin();
-            String entityName = em.getMetamodel().entity(User.class).getName();
+            String entityName = em.getMetamodel().entity(UserGroup.class).getName();
             em.createQuery("delete from " + entityName).executeUpdate();
             //em.getTransaction().commit();
         } catch (IllegalStateException ise) {

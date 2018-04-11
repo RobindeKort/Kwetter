@@ -9,11 +9,11 @@ import static org.junit.Assert.*;
  *
  * @author Robin
  */
-public class UserTest {
+public class AccountTest {
     @Test
     public void testConstructorEmpty() {
         System.out.println("constructorEmpty");
-        User instance = new User();
+        Account instance = new Account();
         assertEquals(instance.getId(), null);
         assertEquals(instance.getUserName(), null);
         assertEquals(instance.checkPassword(""), false);
@@ -25,11 +25,10 @@ public class UserTest {
         assertEquals(instance.getBio(), null);
         assertEquals(instance.getLocation(), null);
         assertEquals(instance.getWebsite(), null);
-        assertEquals(instance.getRole(), null);
         assertEquals(instance.getFollowingCount(), 0);
-        assertEquals(instance.getFollowing(), Collections.unmodifiableSet(new HashSet<User>()));
+        assertEquals(instance.getFollowing(), Collections.unmodifiableSet(new HashSet<Account>()));
         assertEquals(instance.getFollowedByCount(), 0);
-        assertEquals(instance.getFollowedBy(), Collections.unmodifiableSet(new HashSet<User>()));
+        assertEquals(instance.getFollowedBy(), Collections.unmodifiableSet(new HashSet<Account>()));
         assertEquals(instance.getKweetCount(), 0);
         assertEquals(instance.getKweets(), Collections.unmodifiableSet(new HashSet<Kweet>()));
     }
@@ -37,23 +36,23 @@ public class UserTest {
     @Test
     public void testConstructorUsername() {
         System.out.println("constructorUsername");
-        User instance = new User("asdf");
+        UserGroup group = new UserGroup("User");
+        Account instance = new Account("asdf", "asdf@kwetter.com", group);
         assertEquals(instance.getId(), null);
         assertEquals(instance.getUserName(), "asdf");
         assertEquals(instance.checkPassword("password"), true);
         assertEquals(instance.checkPassword("asdf"), false);
-        assertEquals(instance.getEmail(), "");
+        assertEquals(instance.getEmail(), "asdf@kwetter.com");
         assertEquals(instance.getPicturePath(), "");
         assertEquals(instance.getFirstName(), "");
         assertEquals(instance.getLastName(), "");
         assertEquals(instance.getBio(), "");
         assertEquals(instance.getLocation(), "");
         assertEquals(instance.getWebsite(), "");
-        assertEquals(instance.getRole(), Role.User);
         assertEquals(instance.getFollowingCount(), 0);
-        assertEquals(instance.getFollowing(), Collections.unmodifiableSet(new HashSet<User>()));
+        assertEquals(instance.getFollowing(), Collections.unmodifiableSet(new HashSet<Account>()));
         assertEquals(instance.getFollowedByCount(), 0);
-        assertEquals(instance.getFollowedBy(), Collections.unmodifiableSet(new HashSet<User>()));
+        assertEquals(instance.getFollowedBy(), Collections.unmodifiableSet(new HashSet<Account>()));
         assertEquals(instance.getKweetCount(), 0);
         assertEquals(instance.getKweets(), Collections.unmodifiableSet(new HashSet<Kweet>()));
     }
@@ -61,9 +60,10 @@ public class UserTest {
     @Test
     public void testConstructorFull() {
         System.out.println("constructorFull");
-        User instance = new User("Username", "Password", "Email", "Picture", 
+        UserGroup group = new UserGroup("User");
+        Account instance = new Account("Username", "Password", "Email", "Picture", 
                                  "Firstname", "Lastname", "Bio", "Location", 
-                                 "Website");
+                                 "Website", group);
         assertEquals(instance.getId(), null);
         assertEquals(instance.getUserName(), "Username");
         assertEquals(instance.checkPassword("Password"), true);
@@ -75,11 +75,10 @@ public class UserTest {
         assertEquals(instance.getBio(), "Bio");
         assertEquals(instance.getLocation(), "Location");
         assertEquals(instance.getWebsite(), "Website");
-        assertEquals(instance.getRole(), Role.User);
         assertEquals(instance.getFollowingCount(), 0);
-        assertEquals(instance.getFollowing(), Collections.unmodifiableSet(new HashSet<User>()));
+        assertEquals(instance.getFollowing(), Collections.unmodifiableSet(new HashSet<Account>()));
         assertEquals(instance.getFollowedByCount(), 0);
-        assertEquals(instance.getFollowedBy(), Collections.unmodifiableSet(new HashSet<User>()));
+        assertEquals(instance.getFollowedBy(), Collections.unmodifiableSet(new HashSet<Account>()));
         assertEquals(instance.getKweetCount(), 0);
         assertEquals(instance.getKweets(), Collections.unmodifiableSet(new HashSet<Kweet>()));
     }
@@ -87,7 +86,7 @@ public class UserTest {
     @Test
     public void testSetId() {
         System.out.println("setId");
-        User instance = new User();
+        Account instance = new Account();
         instance.setId(2L);
         Long expResult = 2L;
         Long result = instance.getId();
@@ -97,7 +96,7 @@ public class UserTest {
     @Test
     public void testSetUserName() {
         System.out.println("setUserName");
-        User instance = new User();
+        Account instance = new Account();
         instance.setUserName("asdf");
         String expResult = "asdf";
         String result = instance.getUserName();
@@ -107,7 +106,8 @@ public class UserTest {
     @Test
     public void testSetPassword() {
         System.out.println("setPassword");
-        User instance = new User("name");
+        UserGroup group = new UserGroup("User");
+        Account instance = new Account("name", "name@kwetter.com", group);
         boolean expResult = true;
         boolean result = instance.checkPassword("password");
         assertTrue(result);
@@ -124,7 +124,7 @@ public class UserTest {
     @Test
     public void testSetEmail() {
         System.out.println("setEmail");
-        User instance = new User();
+        Account instance = new Account();
         instance.setEmail("asdf");
         String expResult = "asdf";
         String result = instance.getEmail();
@@ -134,7 +134,7 @@ public class UserTest {
     @Test
     public void testSetPicturePath() {
         System.out.println("setPicturePath");
-        User instance = new User();
+        Account instance = new Account();
         instance.setPicturePath("asdf");
         String expResult = "asdf";
         String result = instance.getPicturePath();
@@ -144,7 +144,7 @@ public class UserTest {
     @Test
     public void testSetFirstName() {
         System.out.println("setFirstName");
-        User instance = new User();
+        Account instance = new Account();
         instance.setFirstName("asdf");
         String expResult = "asdf";
         String result = instance.getFirstName();
@@ -154,7 +154,7 @@ public class UserTest {
     @Test
     public void testSetLastName() {
         System.out.println("setLastName");
-        User instance = new User();
+        Account instance = new Account();
         instance.setLastName("asdf");
         String expResult = "asdf";
         String result = instance.getLastName();
@@ -164,7 +164,7 @@ public class UserTest {
     @Test
     public void testSetBio() {
         System.out.println("setBio");
-        User instance = new User();
+        Account instance = new Account();
         instance.setBio("asdf");
         String expResult = "asdf";
         String result = instance.getBio();
@@ -174,7 +174,7 @@ public class UserTest {
     @Test
     public void testSetLocation() {
         System.out.println("setLocation");
-        User instance = new User();
+        Account instance = new Account();
         instance.setLocation("asdf");
         String expResult = "asdf";
         String result = instance.getLocation();
@@ -184,7 +184,7 @@ public class UserTest {
     @Test
     public void testSetWebsite() {
         System.out.println("setWebsite");
-        User instance = new User();
+        Account instance = new Account();
         instance.setWebsite("asdf");
         String expResult = "asdf";
         String result = instance.getWebsite();
@@ -192,20 +192,11 @@ public class UserTest {
     }
     
     @Test
-    public void testSetRole() {
-        System.out.println("setRole");
-        User instance = new User();
-        instance.setRole(Role.Moderator);
-        Role expResult = Role.Moderator;
-        Role result = instance.getRole();
-        assertEquals(expResult, result);
-    }
-    
-    @Test
     public void testAddRemoveFollowing() {
         System.out.println("setAddRemoveFollowing");
-        User instance = new User("name");
-        User u2 = new User("name2");
+        UserGroup group = new UserGroup("User");
+        Account instance = new Account("name", "name@kwetter.com", group);
+        Account u2 = new Account("name2", "name2@kwetter.com", group);
         int expResult = 0;
         int result = instance.getFollowingCount();
         assertEquals(expResult, result);
@@ -225,8 +216,9 @@ public class UserTest {
     @Test
     public void testAddRemoveFollowedBy() {
         System.out.println("setAddRemoveFollowedBy");
-        User instance = new User("name");
-        User u2 = new User("name2");
+        UserGroup group = new UserGroup("User");
+        Account instance = new Account("name", "name@kwetter.com", group);
+        Account u2 = new Account("name2", "name2@kwetter.com", group);
         int expResult = 0;
         int result = instance.getFollowedByCount();
         assertEquals(expResult, result);
@@ -246,7 +238,7 @@ public class UserTest {
     @Test
     public void testAddRemoveKweet() {
         System.out.println("setAddRemoveKweet");
-        User instance = new User();
+        Account instance = new Account();
         int expResult = 0;
         int result = instance.getKweetCount();
         assertEquals(expResult, result);

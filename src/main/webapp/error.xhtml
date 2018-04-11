@@ -4,18 +4,12 @@
       xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://java.sun.com/jsf/html">
     <h:head>
-        <title>Kwetter</title>
+        <title>Login Error</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
-        <h3>Hello #{accountBean.loggedInName}</h3>
-        <table style="width:100%">
-            <tr>
-                <th>Username</th>
-                <th>Role</th> 
-                <th>Actions</th>
-            </tr>
-            #{accountBean.users}
-        </table>
+        <h2>Invalid username or password.</h2>
+        <p>Please enter valid credentials.</p>
+        <h:button outcome="login" value="Back to Login"/>
     </h:body>
 </html>

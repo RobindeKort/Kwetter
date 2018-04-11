@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html lang="en"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html">
+    <h:head>
+        <title>Login</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <form name="loginForm" method="POST" action="j_security_check">
+            <fieldset>
+                <div>
+                    <legend>Login</legend>
+                </div>
+                <div>
+                    <input type="text" name="j_username" placeholder="Username"/>
+                </div>
+                <div>
+                    <input type="password" name="j_password" placeholder="Password"/>
+                </div>
+                <div>
+                    <input type="submit" value="Log In"/>
+                </div>
+            </fieldset>
+        </form>
+    </h:body>
+</html>

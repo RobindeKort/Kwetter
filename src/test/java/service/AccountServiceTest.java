@@ -1,7 +1,7 @@
 package service;
 
 import dal.*;
-import domain.User;
+import domain.Account;
 import java.util.List;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -16,12 +16,12 @@ import org.junit.BeforeClass;
  *
  * @author Robin
  */
-public class UserServiceTest {
+public class AccountServiceTest {
     /*private static EntityManagerFactory emf;
     private KweetDaoJpa kweetDao;
     private UserDaoJpa userDao;
     private UserService userService;
-    private User defaultUser;
+    private Account defaultUser;
     
     @BeforeClass
     public static void setUpClass() {
@@ -39,9 +39,9 @@ public class UserServiceTest {
         userDao = new UserDaoJpa(emf.createEntityManager());
         userService = new UserService(userDao, kweetDao);
         
-        User u = new User("name");
+        Account u = new Account("name");
         userService.createUser(u);
-        for (User us: userService.findUsers("name")) {
+        for (Account us: userService.findUsers("name")) {
             if (us.getUserName().equals("name")) {
                 defaultUser = us;
                 break;
@@ -61,7 +61,7 @@ public class UserServiceTest {
         int expResult = 0;
         int result = userService.findUsers("asdf").size();
         assertEquals(expResult, result);
-        User u = new User("asdf");
+        Account u = new Account("asdf");
         userService.createUser(u);
         expResult = 1;
         result = userService.findUsers("asdf").size();
@@ -92,9 +92,9 @@ public class UserServiceTest {
     @Test
     public void testFollowUser() {
         System.out.println("followUser");
-        User user = new User("zxcv");
+        Account user = new Account("zxcv");
         userService.createUser(user);
-        for (User u : userService.findUsers("zxcv")) {
+        for (Account u : userService.findUsers("zxcv")) {
             if (u.getUserName().equals("zxcv")) {
                 userService.followUser(defaultUser, u);
                 break;
@@ -118,8 +118,8 @@ public class UserServiceTest {
     @Test
     public void testGetFollowingKweets() {
         System.out.println("getFollowingKweets");
-        userService.createUser(new User("zxcv"));
-        for (User u : userService.findUsers("zxcv")) {
+        userService.createUser(new Account("zxcv"));
+        for (Account u : userService.findUsers("zxcv")) {
             if (u.getUserName().equals("zxcv")) {
                 userService.followUser(defaultUser, u);
                 userService.sendKweet(u, "asdfqwer");

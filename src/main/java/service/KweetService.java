@@ -1,6 +1,6 @@
 package service;
 
-import dal.*;
+import dal.IKweetDao;
 import domain.*;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -46,7 +46,7 @@ public class KweetService {
         return kweetDao.getKweet(id);
     }
 
-    public void likeKweet(User user, Kweet kweet) {
+    public void likeKweet(Account user, Kweet kweet) {
         kweet.like(user);
         updateKweet(kweet);
     }
