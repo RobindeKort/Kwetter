@@ -226,24 +226,43 @@ public class Account implements Comparable<Account> {
         group.addAccount(this);
     }
     
-//    public Account promote() {
-//        UserGroup highestGroup = getHighestGroup();
-//        if (highestGroup.getGroupName().equals("User")) {
-//            groups.add(new UserGroup("Moderator"));
-//        }
-//        else if (highestGroup.getGroupName().equals("Moderator")) {
-//            groups.add(new UserGroup("Administrator"));
-//        }
-//        return this;
-//    }
-//    
-//    public Account demote() {
-//        UserGroup highestGroup = getHighestGroup();
-//        if (!highestGroup.getGroupName().equals("User")) {
-//            groups.remove(highestGroup);
-//        }
-//        return this;
-//    }
+    public void removeUserGroup(UserGroup group) {
+        if (group == null || !groups.contains(group)) {
+            return;
+        }
+        groups.remove(group);
+        group.removeAccount(this);
+    }
+    
+    public String promoteString() {
+        String newGroup;
+        UserGroup highestGroup = getHighestGroup();
+        if (highestGroup.getGroupName().equals("User")) {
+            newGroup = "Moderator";
+        }
+        else if (highestGroup.getGroupName().equals("Moderator")) {
+            newGroup = "Administrator";
+        }
+        else {
+            newGroup = "Administrator";
+        }
+        return newGroup;
+    }
+    
+    public String demoteString() {
+        String newGroup;
+        UserGroup highestGroup = getHighestGroup();
+        if (highestGroup.getGroupName().equals("Administrator")) {
+            newGroup = "Moderator";
+        }
+        else if (highestGroup.getGroupName().equals("Moderator")) {
+            newGroup = "User";
+        }
+        else {
+            newGroup = "User";
+        }
+        return newGroup;
+    }
 
     public void follow(Account toFollow) {
         if (toFollow.getUserName().equals(this.getUserName())) {

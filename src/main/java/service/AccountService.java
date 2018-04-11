@@ -38,7 +38,7 @@ public class AccountService {
 //        this.kweetService = new KweetService(kweetDao);
 //    }
 
-    public void createAccount(Account account) throws IllegalArgumentException {
+    public void createAccount(Account account) {
         accountDao.createAccount(account);
     }
 

@@ -59,6 +59,10 @@ public class UserGroup implements Serializable, Comparable<UserGroup> {
     public void addAccount(Account account) {
         this.accounts.add(account);
     }
+    
+    public void removeAccount(Account account) {
+        this.accounts.remove(account);
+    }
 
     @Override
     public int compareTo(UserGroup other) {

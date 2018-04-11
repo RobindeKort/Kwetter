@@ -60,6 +60,28 @@ public class UserGroupDaoJpa implements IUserGroupDao {
             throw eee;
         }
     }
+    
+    /**
+     * Merge the state of the given object into persistent context. If the
+     * entity does not exist, an IllegalArgumentException is thrown
+     *
+     * @param group the object that is to be merged into the persistent context
+     * @throws IllegalArgumentException if the given object is not an entity or
+     * is a removed entity
+     */
+    @Override
+    public void updateGroup(UserGroup group) throws IllegalArgumentException {
+        try {
+            //em.getTransaction().begin();
+            em.merge(group);
+            //em.getTransaction().commit();
+        } catch (IllegalStateException ise) {
+            handleExceptions(ise);
+        } catch (IllegalArgumentException iae) {
+            //em.getTransaction().rollback();
+            throw iae;
+        }
+    }
 
     /**
      * Remove the given entity instance

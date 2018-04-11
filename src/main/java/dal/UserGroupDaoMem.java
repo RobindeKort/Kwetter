@@ -27,6 +27,11 @@ public class UserGroupDaoMem implements IUserGroupDao {
     public void createGroup(UserGroup group) {
         groups.putIfAbsent(group.getGroupName(), group);
     }
+    
+    @Override
+    public void updateGroup(UserGroup group) {
+        groups.put(group.getGroupName(), group);
+    }
 
     @Override
     public void removeGroup(UserGroup group) {

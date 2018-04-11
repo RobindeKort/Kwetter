@@ -12,7 +12,7 @@ import javax.inject.Inject;
  */
 @Stateless
 public class UserGroupService {
-    
+
     @Inject
     private IUserGroupDao userGroupDao;
 
@@ -20,23 +20,30 @@ public class UserGroupService {
         // nothing
     }
 
-    public void createGroup(UserGroup group) throws IllegalArgumentException {
+    public void createGroup(UserGroup group) {
+        userGroupDao.createGroup(group);
+    }
+
+    public void updateGroup(UserGroup group) {
         UserGroup exists = userGroupDao.getGroup(group.getGroupName());
         if (exists == null) {
-            userGroupDao.createGroup(group);
-        } else {
-            throw new IllegalArgumentException(String.format("Group with name %s already exists.", group.getGroupName()));
+            throw new IllegalArgumentException(String.format("Group with Name %s does not exist.", group.getGroupName()));
         }
+        userGroupDao.updateGroup(group);
     }
 
     public void removeGroup(UserGroup group) {
         userGroupDao.removeGroup(group);
     }
 
+    public UserGroup getGroup(String id) {
+        return userGroupDao.getGroup(id);
+    }
+
     public UserGroup getAccount(String id) {
         return userGroupDao.getGroup(id);
     }
-    
+
     public List<UserGroup> getAllGroups() {
         return userGroupDao.getAllGroups();
     }

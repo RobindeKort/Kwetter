@@ -1,9 +1,13 @@
 package bean;
 
 import domain.Account;
+import java.util.ArrayList;
 import java.util.List;
 import javax.faces.bean.ManagedBean;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
+import javax.servlet.http.HttpSession;
 import service.AccountService;
 
 /**
@@ -12,9 +16,14 @@ import service.AccountService;
  */
 //@Named(value = "userBean")
 @ManagedBean
+@SessionScoped
 public class AccountBean {
-
-    private final String testString = "testStr";
+    
+    private String accountName;
+    private Account account;
+    private String searchString;
+    private List<Account> accountList;
+    
     @Inject
     private AccountService accountService;
 
@@ -25,31 +34,49 @@ public class AccountBean {
 
     }
 
-    public String gettestString() {
-        return testString;
+    public String getAccountName() {
+        accountName = FacesContext.getCurrentInstance().getExternalContext().getUserPrincipal().getName();
+        account = accountService.getAccount(accountName);
+        return accountName;
+    }
+    
+    public String logOut() {
+        ((HttpSession)FacesContext.getCurrentInstance().getExternalContext().getSession(false)).invalidate();
+        return "login";
     }
 
-    public String getLoggedInName() {
-        return "asdf";
+//    public String getUsers() {
+//        String partialName = "dmi";
+//        StringBuilder sb = new StringBuilder();
+//        List<Account> accs = accountService.findAccounts(partialName);
+//        for (Account acc : accs) {
+//            sb.append("\n<tr>\n<td>");
+//            sb.append(acc.getUserName());
+//            sb.append("</td>\n<td>");
+//            sb.append(acc.getHighestGroup().toString());
+//            sb.append("</td>\n<td>");
+//            sb.append("BUTTONS HERE");
+//            sb.append("</td>\n</tr>");
+//        }
+//        return sb.toString();
+//    }
+    
+    public String getSearchString() {
+        return searchString;
     }
-
-    public String getUsers() {
-        String partialName = "dmi";
-        StringBuilder sb = new StringBuilder();
-        List<Account> accs = accountService.findAccounts(partialName);
-        for (Account acc : accs) {
-            sb.append("\n<tr>\n<td>");
-            sb.append(acc.getUserName());
-            sb.append("</td>\n<td>");
-            sb.append(acc.getHighestGroup().toString());
-            sb.append("</td>\n<td>");
-            sb.append("BUTTONS HERE");
-            sb.append("</td>\n</tr>");
+    
+    public void setSearchString(String searchString) {
+        this.searchString = searchString;
+    }
+    
+    public void findAccounts() {
+        if (searchString == null || searchString.length() < 2) {
+            return;
         }
-        return sb.toString();
+        accountList = accountService.findAccounts(searchString);
     }
-
-    public AccountService getAccountService() {
-        return accountService;
+    
+    public List<Account> getAccountList() {
+        return accountList;
     }
 }
