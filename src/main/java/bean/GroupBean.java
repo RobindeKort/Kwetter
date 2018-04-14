@@ -36,7 +36,8 @@ public class GroupBean {
     }
     
     public void demoteAccount(Account account) {
-        UserGroup group = userGroupService.getGroup(account.promoteString());
+//        UserGroup group = userGroupService.getGroup(account.demoteString());
+        UserGroup group = account.getHighestGroup();
         account.removeUserGroup(group);
         userGroupService.updateGroup(group);
         accountService.updateAccount(account);

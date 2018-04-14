@@ -68,7 +68,7 @@ public class UserGroup implements Serializable, Comparable<UserGroup> {
     public int compareTo(UserGroup other) {
         if (this.groupName.equals(other.groupName)) {
             return 0;
-        } // Account is the lowerst possible group
+        } // User is the lowest possible group
         else if (this.groupName.equals("User")
                 || (this.groupName.equals("Moderator") && other.groupName.equals("Administrator"))) {
             return -1;
@@ -80,6 +80,15 @@ public class UserGroup implements Serializable, Comparable<UserGroup> {
                 (this.groupName.equals("Moderator") && other.groupName.equals("Account"))) {
             return 1;
         }*/
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || !(obj instanceof UserGroup)) {
+            return false;
+        }
+        UserGroup other = (UserGroup)obj;
+        return (this.compareTo(other) == 0);
     }
     
     @Override

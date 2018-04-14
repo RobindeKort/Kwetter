@@ -222,12 +222,19 @@ public class Account implements Comparable<Account> {
         if (group == null || groups.contains(group)) {
             return;
         }
+        // TODO: for some reason the contains method doesn't use the @Override 
+        // implementation of UserGroup.equals(Object obj)
+        for (UserGroup g : groups) {
+            if (g.compareTo(group) == 0) {
+                return;
+            }
+        }
         groups.add(group);
         group.addAccount(this);
     }
     
     public void removeUserGroup(UserGroup group) {
-        if (group == null || !groups.contains(group)) {
+        if (group == null || group.toString().equals("User") || !groups.contains(group)) {
             return;
         }
         groups.remove(group);
@@ -249,20 +256,20 @@ public class Account implements Comparable<Account> {
         return newGroup;
     }
     
-    public String demoteString() {
-        String newGroup;
-        UserGroup highestGroup = getHighestGroup();
-        if (highestGroup.getGroupName().equals("Administrator")) {
-            newGroup = "Moderator";
-        }
-        else if (highestGroup.getGroupName().equals("Moderator")) {
-            newGroup = "User";
-        }
-        else {
-            newGroup = "User";
-        }
-        return newGroup;
-    }
+//    public String demoteString() {
+//        String newGroup;
+//        UserGroup highestGroup = getHighestGroup();
+//        if (highestGroup.getGroupName().equals("Administrator")) {
+//            newGroup = "Moderator";
+//        }
+//        else if (highestGroup.getGroupName().equals("Moderator")) {
+//            newGroup = "User";
+//        }
+//        else {
+//            newGroup = "User";
+//        }
+//        return newGroup;
+//    }
 
     public void follow(Account toFollow) {
         if (toFollow.getUserName().equals(this.getUserName())) {
