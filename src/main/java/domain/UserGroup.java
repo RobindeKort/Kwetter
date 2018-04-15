@@ -84,6 +84,7 @@ public class UserGroup implements Serializable, Comparable<UserGroup> {
     
     @Override
     public boolean equals(Object obj) {
+        //System.out.println("test\n");
         if (obj == null || !(obj instanceof UserGroup)) {
             return false;
         }
