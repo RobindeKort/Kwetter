@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
@@ -52,6 +53,7 @@ public class UserGroup implements Serializable, Comparable<UserGroup> {
         this.groupName = groupName;
     }
 
+    @JsonbTransient
     public Set<Account> getAccounts() {
         return Collections.unmodifiableSet(accounts);
     }

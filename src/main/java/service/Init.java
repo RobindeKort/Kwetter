@@ -48,6 +48,12 @@ public class Init {
         a1.addUserGroup(g3);
         m1.addUserGroup(g2);
         
+        a1.addFollowing(m1);
+        a1.addFollowing(u1);
+        m1.addFollowing(a1);
+        u1.addFollowing(a1);
+        u2.addFollowing(a1);
+        
         userGroupService.createGroup(g1);
         userGroupService.createGroup(g2);
         userGroupService.createGroup(g3);

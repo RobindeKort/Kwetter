@@ -1,8 +1,10 @@
 package domain;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import javax.json.bind.annotation.JsonbTransient;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -33,7 +35,7 @@ import org.apache.commons.codec.digest.DigestUtils;
     @NamedQuery(name = "Account.findAccountsByUserName",
             query = "SELECT a FROM Account a WHERE a.userName LIKE CONCAT('%', :username, '%')")
 })
-public class Account implements Comparable<Account> {
+public class Account implements Serializable, Comparable<Account> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,7 +51,7 @@ public class Account implements Comparable<Account> {
     private String bio;
     private String location;
     private String website;
-    @ManyToMany(mappedBy = "accounts", cascade = CascadeType.PERSIST)
+    @ManyToMany(mappedBy = "accounts", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     private Set<UserGroup> groups = new HashSet();
 
     @OneToMany(fetch = FetchType.LAZY)
@@ -204,6 +206,7 @@ public class Account implements Comparable<Account> {
         this.website = website;
     }
     
+    @JsonbTransient
     public Set<UserGroup> getGroups() {
         return this.groups;
     }
@@ -271,14 +274,15 @@ public class Account implements Comparable<Account> {
 //        return newGroup;
 //    }
 
-    public void follow(Account toFollow) {
+    public void addFollowing(Account toFollow) {
         if (toFollow.getUserName().equals(this.getUserName())) {
             return;
         }
         this.following.add(toFollow);
+        toFollow.addFollowedBy(this);
     }
 
-    public void unfollow(Account toUnfollow) {
+    public void removeFollowing(Account toUnfollow) {
         this.following.remove(toUnfollow);
     }
 
@@ -286,6 +290,7 @@ public class Account implements Comparable<Account> {
         return following.size();
     }
 
+    @JsonbTransient
     public Set<Account> getFollowing() {
         return Collections.unmodifiableSet(following);
     }
@@ -305,6 +310,7 @@ public class Account implements Comparable<Account> {
         return followedBy.size();
     }
 
+    @JsonbTransient
     public Set<Account> getFollowedBy() {
         return Collections.unmodifiableSet(followedBy);
     }
@@ -321,6 +327,7 @@ public class Account implements Comparable<Account> {
         return kweets.size();
     }
 
+    @JsonbTransient
     public Set<Kweet> getKweets() {
         return Collections.unmodifiableSet(kweets);
     }

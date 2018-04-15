@@ -73,7 +73,7 @@ public class AccountService {
      * @param account2 Account who is going to be followed by user1
      */
     public void followAccount(Account account1, Account account2) {
-        account1.follow(account2);
+        account1.addFollowing(account2);
         account2.addFollowedBy(account1);
         updateAccount(account1);
         updateAccount(account2);

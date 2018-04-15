@@ -200,14 +200,14 @@ public class AccountTest {
         int expResult = 0;
         int result = instance.getFollowingCount();
         assertEquals(expResult, result);
-        instance.follow(instance);
+        instance.addFollowing(instance);
         result = instance.getFollowingCount();
         assertEquals(expResult, result);
-        instance.follow(u2);
+        instance.addFollowing(u2);
         expResult = 1;
         result = instance.getFollowingCount();
         assertEquals(expResult, result);
-        instance.unfollow(u2);
+        instance.removeFollowing(u2);
         expResult = 0;
         result = instance.getFollowingCount();
         assertEquals(expResult, result);
