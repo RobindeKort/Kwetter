@@ -84,7 +84,7 @@ public class Account implements Serializable, Comparable<Account> {
     }
 
     public Account(String userName, String email, UserGroup group) {
-        this(userName, "password", email, group);
+        this(userName, DigestUtils.sha256Hex("password"), email, group);
     }
 
     public Account(String userName, String password, String email, UserGroup group) {
@@ -95,7 +95,7 @@ public class Account implements Serializable, Comparable<Account> {
             String firstName, String lastName, String bio, String location,
             String website, UserGroup group) {
         this.userName = userName;
-        this.password = DigestUtils.sha256Hex(password);
+        this.password = password;
         this.email = email;
         this.picturePath = picturePath;
         this.firstName = firstName;
@@ -129,7 +129,7 @@ public class Account implements Serializable, Comparable<Account> {
      * @return true if the strings match, false otherwise.
      */
     public boolean checkPassword(String password) {
-        if (this.password != null && this.password.equals(DigestUtils.sha256Hex(password))) {
+        if (this.password != null && this.password.equals(password)) {
             return true;
         }
         return false;
@@ -143,8 +143,8 @@ public class Account implements Serializable, Comparable<Account> {
      * @return true if the password has been changed, false otherwise.
      */
     public boolean setPassword(String oldPassword, String newPassword) {
-        if (this.password.equals(DigestUtils.sha256Hex(oldPassword))) {
-            this.password = DigestUtils.sha256Hex(newPassword);
+        if (this.password.equals(oldPassword)) {
+            this.password = newPassword;
             return true;
         }
         return false;

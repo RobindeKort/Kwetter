@@ -2,6 +2,7 @@ package domain;
 
 import java.util.Collections;
 import java.util.HashSet;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -40,8 +41,8 @@ public class AccountTest {
         Account instance = new Account("asdf", "asdf@kwetter.com", group);
         assertEquals(instance.getId(), null);
         assertEquals(instance.getUserName(), "asdf");
-        assertEquals(instance.checkPassword("password"), true);
-        assertEquals(instance.checkPassword("asdf"), false);
+        assertEquals(instance.checkPassword(DigestUtils.sha256Hex("password")), true);
+        assertEquals(instance.checkPassword("password"), false);
         assertEquals(instance.getEmail(), "asdf@kwetter.com");
         assertEquals(instance.getPicturePath(), "");
         assertEquals(instance.getFirstName(), "");
@@ -61,13 +62,13 @@ public class AccountTest {
     public void testConstructorFull() {
         System.out.println("constructorFull");
         UserGroup group = new UserGroup("User");
-        Account instance = new Account("Username", "Password", "Email", "Picture", 
+        Account instance = new Account("Username", DigestUtils.sha256Hex("Password"), "Email", "Picture", 
                                  "Firstname", "Lastname", "Bio", "Location", 
                                  "Website", group);
         assertEquals(instance.getId(), null);
         assertEquals(instance.getUserName(), "Username");
-        assertEquals(instance.checkPassword("Password"), true);
-        assertEquals(instance.checkPassword("password"), false);
+        assertEquals(instance.checkPassword(DigestUtils.sha256Hex("Password")), true);
+        assertEquals(instance.checkPassword("Password"), false);
         assertEquals(instance.getEmail(), "Email");
         assertEquals(instance.getPicturePath(), "Picture");
         assertEquals(instance.getFirstName(), "Firstname");
@@ -109,13 +110,13 @@ public class AccountTest {
         UserGroup group = new UserGroup("User");
         Account instance = new Account("name", "name@kwetter.com", group);
         boolean expResult = true;
-        boolean result = instance.checkPassword("password");
+        boolean result = instance.checkPassword(DigestUtils.sha256Hex("password"));
         assertTrue(result);
-        instance.setPassword("password", "asdf");
-        result = instance.checkPassword("asdf");
+        instance.setPassword(DigestUtils.sha256Hex("password"), DigestUtils.sha256Hex("asdf"));
+        result = instance.checkPassword(DigestUtils.sha256Hex("asdf"));
         assertTrue(result);
-        instance.setPassword("fakepass", "qwer");
-        result = instance.checkPassword("asdf");
+        instance.setPassword("password", "qwer");
+        result = instance.checkPassword(DigestUtils.sha256Hex("asdf"));
         assertTrue(result);
         result = instance.checkPassword("qwer");
         assertFalse(result);
