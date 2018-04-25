@@ -1,4 +1,4 @@
-package kwetter;
+package rest;
 
 import domain.*;
 import java.util.Set;
@@ -19,7 +19,7 @@ import javax.ws.rs.core.UriInfo;
 import service.AccountService;
 
 @Path("/users")
-public class HelloWorld {
+public class AccountResource {
 
 //    @Inject
     private AccountService accountService;
@@ -27,16 +27,16 @@ public class HelloWorld {
     @Context
     private UriInfo context;
 
-//    public HelloWorld() {
+//    public AccountResource() {
 //        
 //    }
     @Inject
-    public HelloWorld(AccountService accountService) {
+    public AccountResource(AccountService accountService) {
         this.accountService = accountService;
     }
 
     @POST
-    @Path("")
+    //@Path("")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postAccount(Account account) {
         if (account != null) {

@@ -1,0 +1,91 @@
+package rest;
+
+import domain.Account;
+import io.jsonwebtoken.CompressionCodecs;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import javax.inject.Inject;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Cookie;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.NewCookie;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriInfo;
+import service.AccountService;
+import util.PropertiesProvider;
+
+@Path("/auth")
+public class AuthResource {
+
+//    @Inject
+    private AccountService accountService;
+
+    @Context
+    private UriInfo context;
+
+//    public AccountResource() {
+//        
+//    }
+    @Inject
+    public AuthResource(AccountService accountService) {
+        this.accountService = accountService;
+    }
+
+    @POST
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public Response authenticateUser(@FormParam("username") String username,
+            @FormParam("password") String password) {
+        try {
+            authenticate(username, password);
+            String token = issueToken(username);
+            return Response
+                    .status(Status.OK)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .cookie(new NewCookie(new Cookie("access_token", token), "KwetterAuth", 3600, true))
+                    //.entity(token)
+                    .build();
+        } catch (IllegalArgumentException iae) {
+            return Response
+                    .status(Status.FORBIDDEN)
+                    .header("Access-Control-Allow-Origin", "*")
+                    .build();
+        }
+    }
+
+    private void authenticate(String username, String password) throws IllegalArgumentException {
+        Account acc = accountService.getAccount(username);
+        if (acc == null) {
+            throw new IllegalArgumentException("Invalid authentication: Account not found");
+        } else if (!acc.checkPassword(password)) {
+            throw new IllegalArgumentException("Invalid authentication: Password invalid");
+        }
+        // No exceptions thrown, user is authenticated
+    }
+    
+    public static void verifyToken(String token) throws SignatureException {
+        String key = PropertiesProvider.getSecurityKey();
+        Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+    }
+
+    private String issueToken(String username) {
+        // Acquire key to sign token
+        String key = PropertiesProvider.getSecurityKey();
+        // Create the token and compact it to a String
+        String compactJws = Jwts.builder()
+                .setSubject(username)
+                .compressWith(CompressionCodecs.DEFLATE)
+                .signWith(SignatureAlgorithm.HS512, key)
+                .compact();
+        // Verify the token
+        assert Jwts.parser().setSigningKey(key).parseClaimsJws(compactJws).getBody().getSubject().equals(username);
+        return compactJws;
+    }
+}
