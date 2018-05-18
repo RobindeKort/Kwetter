@@ -52,6 +52,7 @@ public class AccountResource {
 
     @GET
     @Path("{userName}")
+    @JWTTokenNeeded
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAccount(@PathParam("userName") String userName) {
         Account u = accountService.getAccount(userName);
