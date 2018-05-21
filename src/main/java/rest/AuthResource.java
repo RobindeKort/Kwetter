@@ -48,14 +48,12 @@ public class AuthResource {
             String token = issueToken(username);
             return Response
                     .status(Status.OK)
-                    .header("Access-Control-Allow-Origin", "*")
                     .cookie(new NewCookie(new Cookie("access_token", token), "KwetterAuth", 3600, false))
                     //.entity(token)
                     .build();
         } catch (IllegalArgumentException iae) {
             return Response
                     .status(Status.FORBIDDEN)
-                    .header("Access-Control-Allow-Origin", "*")
                     .build();
         }
     }

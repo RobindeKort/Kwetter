@@ -45,7 +45,6 @@ public class AccountResource {
         String result = account.getUserName();
         return Response
                 .status(Status.CREATED)
-                .header("Access-Control-Allow-Origin", "*")
                 .entity(result)
                 .build();
     }
@@ -58,19 +57,18 @@ public class AccountResource {
         Account u = accountService.getAccount(userName);
         return Response
                 .status(Status.OK)
-                .header("Access-Control-Allow-Origin", "*")
                 .entity(u)
                 .build();
     }
 
     @GET
     @Path("{userName}/following")
+    @JWTTokenNeeded
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFollowing(@PathParam("userName") String userName) {
         Account u = accountService.getAccount(userName);
         return Response
                 .status(Status.OK)
-                .header("Access-Control-Allow-Origin", "*")
                 .entity(u.getFollowing())
                 .build();
     }
@@ -82,7 +80,6 @@ public class AccountResource {
         Account u = accountService.getAccount(userName);
         return Response
                 .status(Status.OK)
-                .header("Access-Control-Allow-Origin", "*")
                 .entity(u.getFollowedBy())
                 .build();
     }
