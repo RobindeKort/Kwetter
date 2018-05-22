@@ -32,18 +32,18 @@ public class Init {
         UserGroup g2 = new UserGroup("Moderator");
         UserGroup g3 = new UserGroup("Administrator");
         
-        Account a1 = new Account("admin", DigestUtils.sha256Hex("admin"), "admin@kwetter.com", g1);
-        Account m1 = new Account("mod", DigestUtils.sha256Hex("mod"), "mod@kwetter.com", g1);
-        Account u1 = new Account("user1", DigestUtils.sha256Hex("user"), "user1@kwetter.com", g1);
-        Account u2 = new Account("user2", DigestUtils.sha256Hex("user"), "user2@kwetter.com", g1);
-        Account u3 = new Account("user3", DigestUtils.sha256Hex("user"), "user3@kwetter.com", g1);
-        Account u4 = new Account("user4", DigestUtils.sha256Hex("user"), "user4@kwetter.com", g1);
-        Account u5 = new Account("user5", DigestUtils.sha256Hex("user"), "user5@kwetter.com", g1);
-        Account u6 = new Account("user6", DigestUtils.sha256Hex("user"), "user6@kwetter.com", g1);
-        Account u7 = new Account("user7", DigestUtils.sha256Hex("user"), "user7@kwetter.com", g1);
-        Account u8 = new Account("user8", DigestUtils.sha256Hex("user"), "user8@kwetter.com", g1);
-        Account u9 = new Account("user9", DigestUtils.sha256Hex("user"), "user9@kwetter.com", g1);
-        Account u10 = new Account("user10", DigestUtils.sha256Hex("user"), "user10@kwetter.com", g1);
+        Account a1 = new Account("admin", "admin", "admin@kwetter.com", g1);
+        Account m1 = new Account("mod", "mod", "mod@kwetter.com", g1);
+        Account u1 = new Account("user1", "user", "user1@kwetter.com", g1);
+        Account u2 = new Account("user2", "user", "user2@kwetter.com", g1);
+        Account u3 = new Account("user3", "user", "user3@kwetter.com", g1);
+        Account u4 = new Account("user4", "user", "user4@kwetter.com", g1);
+        Account u5 = new Account("user5", "user", "user5@kwetter.com", g1);
+        Account u6 = new Account("user6", "user", "user6@kwetter.com", g1);
+        Account u7 = new Account("user7", "user", "user7@kwetter.com", g1);
+        Account u8 = new Account("user8", "user", "user8@kwetter.com", g1);
+        Account u9 = new Account("user9", "user", "user9@kwetter.com", g1);
+        Account u10 = new Account("user10", "user", "user10@kwetter.com", g1);
         
         a1.addUserGroup(g2);
         a1.addUserGroup(g3);

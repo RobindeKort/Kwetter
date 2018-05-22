@@ -78,13 +78,12 @@ public class Account implements Serializable, Comparable<Account> {
 //            kweets = new HashSet();
 //        }
 //    }
-
     public Account() {
         // Nothing
     }
 
     public Account(String userName, String email, UserGroup group) {
-        this(userName, DigestUtils.sha256Hex("password"), email, group);
+        this(userName, "password", email, group);
     }
 
     public Account(String userName, String password, String email, UserGroup group) {
@@ -95,7 +94,7 @@ public class Account implements Serializable, Comparable<Account> {
             String firstName, String lastName, String bio, String location,
             String website, UserGroup group) {
         this.userName = userName;
-        this.password = password;
+        this.password = DigestUtils.sha256Hex(password);
         this.email = email;
         this.picturePath = picturePath;
         this.firstName = firstName;
@@ -129,7 +128,8 @@ public class Account implements Serializable, Comparable<Account> {
      * @return true if the strings match, false otherwise.
      */
     public boolean checkPassword(String password) {
-        if (this.password != null && this.password.equals(password)) {
+        if (this.password != null
+                && this.password.equals(DigestUtils.sha256Hex(password))) {
             return true;
         }
         return false;
@@ -143,8 +143,8 @@ public class Account implements Serializable, Comparable<Account> {
      * @return true if the password has been changed, false otherwise.
      */
     public boolean setPassword(String oldPassword, String newPassword) {
-        if (this.password.equals(oldPassword)) {
-            this.password = newPassword;
+        if (this.password.equals(DigestUtils.sha256Hex(oldPassword))) {
+            this.password = DigestUtils.sha256Hex(newPassword);
             return true;
         }
         return false;
@@ -205,12 +205,12 @@ public class Account implements Serializable, Comparable<Account> {
     public void setWebsite(String website) {
         this.website = website;
     }
-    
+
     @JsonbTransient
     public Set<UserGroup> getGroups() {
         return this.groups;
     }
-    
+
     public UserGroup getHighestGroup() {
         UserGroup highestGroup = new UserGroup("User");
         for (UserGroup g : groups) {
@@ -220,7 +220,7 @@ public class Account implements Serializable, Comparable<Account> {
         }
         return highestGroup;
     }
-    
+
     public void addUserGroup(UserGroup group) {
         if (group == null || groups.contains(group)) {
             return;
@@ -235,7 +235,7 @@ public class Account implements Serializable, Comparable<Account> {
         groups.add(group);
         group.addAccount(this);
     }
-    
+
     public void removeUserGroup(UserGroup group) {
         if (group == null || group.toString().equals("User") || !groups.contains(group)) {
             return;
@@ -243,22 +243,20 @@ public class Account implements Serializable, Comparable<Account> {
         groups.remove(group);
         group.removeAccount(this);
     }
-    
+
     public String promoteString() {
         String newGroup;
         UserGroup highestGroup = getHighestGroup();
         if (highestGroup.getGroupName().equals("User")) {
             newGroup = "Moderator";
-        }
-        else if (highestGroup.getGroupName().equals("Moderator")) {
+        } else if (highestGroup.getGroupName().equals("Moderator")) {
             newGroup = "Administrator";
-        }
-        else {
+        } else {
             newGroup = "Administrator";
         }
         return newGroup;
     }
-    
+
 //    public String demoteString() {
 //        String newGroup;
 //        UserGroup highestGroup = getHighestGroup();
@@ -273,7 +271,6 @@ public class Account implements Serializable, Comparable<Account> {
 //        }
 //        return newGroup;
 //    }
-
     public void addFollowing(Account toFollow) {
         if (toFollow.getUserName().equals(this.getUserName())) {
             return;
