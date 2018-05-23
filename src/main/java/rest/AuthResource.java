@@ -44,12 +44,12 @@ public class AuthResource {
     public Response authenticateUser(@FormParam("username") String username,
             @FormParam("password") String password) {
         try {
-            authenticate(username, password);
+            Account acc = authenticate(username, password);
             String token = issueToken(username);
             return Response
                     .status(Status.OK)
                     .cookie(new NewCookie(new Cookie("access_token", token), "KwetterAuth", 3600, false))
-                    //.entity(token)
+                    .entity(acc)
                     .build();
         } catch (IllegalArgumentException iae) {
             return Response
@@ -58,7 +58,7 @@ public class AuthResource {
         }
     }
 
-    private void authenticate(String username, String password) throws IllegalArgumentException {
+    private Account authenticate(String username, String password) throws IllegalArgumentException {
         Account acc = accountService.getAccount(username);
         if (acc == null) {
             throw new IllegalArgumentException("Invalid authentication: Account not found");
@@ -66,6 +66,7 @@ public class AuthResource {
             throw new IllegalArgumentException("Invalid authentication: Password invalid");
         }
         // No exceptions thrown, user is authenticated
+        return acc;
     }
     
     public static void verifyToken(String token) throws SignatureException {
