@@ -7,7 +7,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.CookieParam;
 import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -36,6 +38,30 @@ public class AuthResource {
     @Inject
     public AuthResource(AccountService accountService) {
         this.accountService = accountService;
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLoggedInAccount(@CookieParam("access_token") Cookie cookie) {
+        if (cookie == null) {
+            return Response
+                    .status(Status.FORBIDDEN)
+                    .build();
+        }
+        try {
+            verifyToken(cookie.getValue());
+            String key = PropertiesProvider.getSecurityKey();
+            String username = Jwts.parser().setSigningKey(key).parseClaimsJws(cookie.getValue()).getBody().getSubject();
+            Account acc = accountService.getAccount(username);
+            return Response
+                    .status(Status.OK)
+                    .entity(acc)
+                    .build();
+        } catch (SignatureException se) {
+            return Response
+                    .status(Status.FORBIDDEN)
+                    .build();
+        }
     }
 
     @POST
@@ -68,7 +94,7 @@ public class AuthResource {
         // No exceptions thrown, user is authenticated
         return acc;
     }
-    
+
     public static void verifyToken(String token) throws SignatureException {
         String key = PropertiesProvider.getSecurityKey();
         Jwts.parser().setSigningKey(key).parseClaimsJws(token);
