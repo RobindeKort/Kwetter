@@ -43,10 +43,10 @@ public class AccountService {
     }
 
     public void updateAccount(Account account) throws IllegalArgumentException {
-        Account exists = accountDao.getAccount(account.getId());
+        /*Account exists = accountDao.getAccount(account.getId());
         if (exists == null) {
             throw new IllegalArgumentException(String.format("Account with ID %d does not exist.", account.getId()));
-        }
+        }*/
         accountDao.updateAccount(account);
     }
 

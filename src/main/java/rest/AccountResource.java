@@ -51,7 +51,7 @@ public class AccountResource {
 
     @GET
     @Path("{userName}")
-    @JWTTokenNeeded
+    //@JWTTokenNeeded
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAccount(@PathParam("userName") String userName) {
         Account u = accountService.getAccount(userName);
@@ -63,7 +63,6 @@ public class AccountResource {
 
     @GET
     @Path("{userName}/following")
-    @JWTTokenNeeded
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFollowing(@PathParam("userName") String userName) {
         Account u = accountService.getAccount(userName);
@@ -81,6 +80,17 @@ public class AccountResource {
         return Response
                 .status(Status.OK)
                 .entity(u.getFollowedBy())
+                .build();
+    }
+
+    @GET
+    @Path("{userName}/kweets")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getKweets(@PathParam("userName") String userName) {
+        Account u = accountService.getAccount(userName);
+        return Response
+                .status(Status.OK)
+                .entity(u.getKweets())
                 .build();
     }
 }

@@ -71,5 +71,17 @@ public class Init {
         accountService.createAccount(u8);
         accountService.createAccount(u9);
         accountService.createAccount(u10);
+        
+        Kweet a1k1 = new Kweet(a1, "This is the first test Kweet");
+        Kweet a1k2 = new Kweet(a1, "This is the second test Kweet");
+        Kweet a1k3 = new Kweet(a1, "This is the third test Kweet");
+        a1.addKweet(a1k1);
+        a1.addKweet(a1k2);
+        a1.addKweet(a1k3);
+        
+        kweetService.createKweet(a1k1);
+        kweetService.createKweet(a1k2);
+        kweetService.createKweet(a1k3);
+        accountService.updateAccount(a1);
     }
 }

@@ -41,6 +41,7 @@ public class AuthResource {
     }
 
     @GET
+    @JWTTokenNeeded
     @Produces(MediaType.APPLICATION_JSON)
     public Response getLoggedInAccount(@CookieParam("access_token") Cookie cookie) {
         if (cookie == null) {
@@ -51,7 +52,11 @@ public class AuthResource {
         try {
             verifyToken(cookie.getValue());
             String key = PropertiesProvider.getSecurityKey();
-            String username = Jwts.parser().setSigningKey(key).parseClaimsJws(cookie.getValue()).getBody().getSubject();
+            String username = Jwts.parser()
+                    .setSigningKey(key)
+                    .parseClaimsJws(cookie.getValue())
+                    .getBody()
+                    .getSubject();
             Account acc = accountService.getAccount(username);
             return Response
                     .status(Status.OK)
@@ -110,7 +115,12 @@ public class AuthResource {
                 .signWith(SignatureAlgorithm.HS512, key)
                 .compact();
         // Verify the token
-        assert Jwts.parser().setSigningKey(key).parseClaimsJws(compactJws).getBody().getSubject().equals(username);
+        assert Jwts.parser()
+                .setSigningKey(key)
+                .parseClaimsJws(compactJws)
+                .getBody()
+                .getSubject()
+                .equals(username);
         return compactJws;
     }
 }

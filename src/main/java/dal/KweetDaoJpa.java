@@ -41,18 +41,18 @@ public class KweetDaoJpa implements IKweetDao {
     @Override
     public void createKweet(Kweet kweet) throws IllegalArgumentException, RollbackException, EntityExistsException {
         try {
-            em.getTransaction().begin();
+            //em.getTransaction().begin();
             em.persist(kweet);
-            em.getTransaction().commit();
+            //em.getTransaction().commit();
         } catch (IllegalStateException ise) {
             handleExceptions(ise);
         } catch (IllegalArgumentException iae) {
-            em.getTransaction().rollback();
+            //em.getTransaction().rollback();
             throw iae;
         } catch (RollbackException rbe) {
             throw rbe;
         } catch (EntityExistsException eee) {
-            em.getTransaction().rollback();
+            //em.getTransaction().rollback();
             throw eee;
         }
     }
@@ -68,13 +68,13 @@ public class KweetDaoJpa implements IKweetDao {
     @Override
     public void updateKweet(Kweet kweet) throws IllegalArgumentException {
         try {
-            em.getTransaction().begin();
+            //em.getTransaction().begin();
             em.merge(kweet);
-            em.getTransaction().commit();
+            //em.getTransaction().commit();
         } catch (IllegalStateException ise) {
             handleExceptions(ise);
         } catch (IllegalArgumentException iae) {
-            em.getTransaction().rollback();
+            //em.getTransaction().rollback();
             throw iae;
         }
     }
@@ -89,13 +89,13 @@ public class KweetDaoJpa implements IKweetDao {
     @Override
     public void removeKweet(Kweet kweet) throws IllegalArgumentException {
         try {
-            em.getTransaction().begin();
+            //em.getTransaction().begin();
             em.remove(kweet);
-            em.getTransaction().commit();
+            //em.getTransaction().commit();
         } catch (IllegalStateException ise) {
             handleExceptions(ise);
         } catch (IllegalArgumentException iae) {
-            em.getTransaction().rollback();
+            //em.getTransaction().rollback();
             throw iae;
         }
     }
@@ -110,13 +110,13 @@ public class KweetDaoJpa implements IKweetDao {
     public Kweet getKweet(Long id) throws IllegalArgumentException, NullPointerException {
         Kweet ret = null;
         try {
-            em.getTransaction().begin();
+            //em.getTransaction().begin();
             ret = em.find(Kweet.class, id);
-            em.getTransaction().commit();
+            //em.getTransaction().commit();
         } catch (IllegalStateException ise) {
             handleExceptions(ise);
         } catch (IllegalArgumentException iae) {
-            em.getTransaction().rollback();
+            //em.getTransaction().rollback();
             throw iae;
         }
         if (ret == null) {
@@ -157,10 +157,10 @@ public class KweetDaoJpa implements IKweetDao {
             return;
         }
         try {
-            em.getTransaction().begin();
+            //em.getTransaction().begin();
             String entityName = em.getMetamodel().entity(Kweet.class).getName();
             em.createQuery("delete from " + entityName).executeUpdate();
-            em.getTransaction().commit();
+            //em.getTransaction().commit();
         } catch (IllegalStateException ise) {
             handleExceptions(ise);
         } catch (RollbackException rbe) {
@@ -169,7 +169,7 @@ public class KweetDaoJpa implements IKweetDao {
             handleExceptions(qte);
         } catch (IllegalArgumentException iae) {
             System.out.println("The given DELETE query is invalid. ");
-            em.getTransaction().rollback();
+            //em.getTransaction().rollback();
         }
     }
 }
