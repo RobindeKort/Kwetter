@@ -1,6 +1,7 @@
 package service;
 
 import domain.*;
+import java.util.GregorianCalendar;
 import javax.annotation.PostConstruct;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -72,16 +73,38 @@ public class Init {
         accountService.createAccount(u9);
         accountService.createAccount(u10);
         
-        Kweet a1k1 = new Kweet(a1, "This is the first test Kweet");
-        Kweet a1k2 = new Kweet(a1, "This is the second test Kweet");
-        Kweet a1k3 = new Kweet(a1, "This is the third test Kweet");
+        Kweet a1k1 = new Kweet(a1, "This is admin's first test Kweet", new GregorianCalendar(2018, 3, 14, 14, 21, 52));
+        Kweet a1k2 = new Kweet(a1, "This is admin's second test Kweet", new GregorianCalendar(2018, 2, 9, 8, 51, 28));
+        Kweet a1k3 = new Kweet(a1, "This is admin's third test Kweet", new GregorianCalendar(2018, 4, 22, 12, 53, 12));
         a1.addKweet(a1k1);
         a1.addKweet(a1k2);
         a1.addKweet(a1k3);
+        
+        Kweet m1k1 = new Kweet(m1, "This is mod's first test Kweet", new GregorianCalendar(2018, 2, 12, 23, 29, 5));
+        Kweet m1k2 = new Kweet(m1, "This is mod's second test Kweet", new GregorianCalendar(2018, 3, 2, 18, 59, 2));
+        Kweet m1k3 = new Kweet(m1, "This is mod's third test Kweet", new GregorianCalendar(2018, 5, 20, 18, 28, 12));
+        m1.addKweet(m1k1);
+        m1.addKweet(m1k2);
+        m1.addKweet(m1k3);
+        
+        Kweet u1k1 = new Kweet(u1, "This is user1's first test Kweet", new GregorianCalendar(2018, 3, 12, 21, 42, 31));
+        Kweet u1k2 = new Kweet(u1, "This is user1's second test Kweet", new GregorianCalendar(2017, 11, 12, 20, 27, 30));
+        Kweet u1k3 = new Kweet(u1, "This is user1's third test Kweet", new GregorianCalendar(2018, 2, 1, 5, 3, 1));
+        u1.addKweet(u1k1);
+        u1.addKweet(u1k2);
+        u1.addKweet(u1k3);
         
         kweetService.createKweet(a1k1);
         kweetService.createKweet(a1k2);
         kweetService.createKweet(a1k3);
         accountService.updateAccount(a1);
+        kweetService.createKweet(m1k1);
+        kweetService.createKweet(m1k2);
+        kweetService.createKweet(m1k3);
+        accountService.updateAccount(m1);
+        kweetService.createKweet(u1k1);
+        kweetService.createKweet(u1k2);
+        kweetService.createKweet(u1k3);
+        accountService.updateAccount(u1);
     }
 }

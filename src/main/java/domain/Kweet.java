@@ -52,8 +52,16 @@ public class Kweet implements Serializable, Comparable<Kweet> {
         this(postedBy, body, new HashSet());
     }
     
+    public Kweet(Account postedBy, String body, Calendar datePosted) {
+        this(postedBy, body, new HashSet(), datePosted);
+    }
+    
     public Kweet(Account postedBy, String body, Set<Account> mentions) {
-        this.datePosted = new GregorianCalendar();
+        this(postedBy, body, mentions, new GregorianCalendar());
+    }
+    
+    public Kweet(Account postedBy, String body, Set<Account> mentions, Calendar datePosted) {
+        this.datePosted = datePosted;
         this.postedBy = postedBy;
         this.body = body;
         this.mentions = mentions;

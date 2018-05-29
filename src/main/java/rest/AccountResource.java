@@ -1,6 +1,7 @@
 package rest;
 
 import domain.*;
+import java.util.Queue;
 import java.util.Set;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -54,10 +55,10 @@ public class AccountResource {
     //@JWTTokenNeeded
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAccount(@PathParam("userName") String userName) {
-        Account u = accountService.getAccount(userName);
+        Account a = accountService.getAccount(userName);
         return Response
                 .status(Status.OK)
-                .entity(u)
+                .entity(a)
                 .build();
     }
 
@@ -65,10 +66,23 @@ public class AccountResource {
     @Path("{userName}/following")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFollowing(@PathParam("userName") String userName) {
-        Account u = accountService.getAccount(userName);
+        Account a = accountService.getAccount(userName);
         return Response
                 .status(Status.OK)
-                .entity(u.getFollowing())
+                .entity(a.getFollowing())
+                .build();
+    }
+
+    @GET
+    @Path("{userName}/following/kweets")
+    @JWTTokenNeeded
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getFollowingKweets(@PathParam("userName") String userName) {
+        Account a = accountService.getAccount(userName);
+        Queue<Kweet> kweets = accountService.getFollowingKweets(a);
+        return Response
+                .status(Status.OK)
+                .entity(kweets)
                 .build();
     }
 
@@ -76,10 +90,10 @@ public class AccountResource {
     @Path("{userName}/followedby")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getFollowedBy(@PathParam("userName") String userName) {
-        Account u = accountService.getAccount(userName);
+        Account a = accountService.getAccount(userName);
         return Response
                 .status(Status.OK)
-                .entity(u.getFollowedBy())
+                .entity(a.getFollowedBy())
                 .build();
     }
 
@@ -87,10 +101,10 @@ public class AccountResource {
     @Path("{userName}/kweets")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getKweets(@PathParam("userName") String userName) {
-        Account u = accountService.getAccount(userName);
+        Account a = accountService.getAccount(userName);
         return Response
                 .status(Status.OK)
-                .entity(u.getKweets())
+                .entity(a.getKweets())
                 .build();
     }
 }
