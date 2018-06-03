@@ -1,6 +1,7 @@
 package rest;
 
 import domain.Account;
+import domain.Kweet;
 import io.jsonwebtoken.CompressionCodecs;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -40,38 +41,9 @@ public class AuthResource {
         this.accountService = accountService;
     }
 
-    @GET
-    @JWTTokenNeeded
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getLoggedInAccount(@CookieParam("access_token") Cookie cookie) {
-        if (cookie == null) {
-            return Response
-                    .status(Status.FORBIDDEN)
-                    .build();
-        }
-        try {
-            verifyToken(cookie.getValue());
-            String key = PropertiesProvider.getSecurityKey();
-            String username = Jwts.parser()
-                    .setSigningKey(key)
-                    .parseClaimsJws(cookie.getValue())
-                    .getBody()
-                    .getSubject();
-            Account acc = accountService.getAccount(username);
-            return Response
-                    .status(Status.OK)
-                    .entity(acc)
-                    .build();
-        } catch (SignatureException se) {
-            return Response
-                    .status(Status.FORBIDDEN)
-                    .build();
-        }
-    }
-
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response authenticateUser(@FormParam("username") String username,
             @FormParam("password") String password) {
         try {
@@ -89,6 +61,55 @@ public class AuthResource {
         }
     }
 
+    @GET
+    @JWTTokenNeeded
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getLoggedInAccount(@CookieParam("access_token") Cookie cookie) {
+        if (cookie == null) {
+            return Response
+                    .status(Status.FORBIDDEN)
+                    .build();
+        }
+        try {
+            String username = verifyToken(cookie.getValue());
+            Account acc = accountService.getAccount(username);
+            return Response
+                    .status(Status.OK)
+                    .entity(acc)
+                    .build();
+        } catch (SignatureException se) {
+            return Response
+                    .status(Status.FORBIDDEN)
+                    .build();
+        }
+    }
+    
+    @POST
+    @Path("kweet")
+    @JWTTokenNeeded
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response postKweet(@CookieParam("access_token") Cookie cookie, 
+            @FormParam("body") String body) {
+        if (cookie == null) {
+            return Response
+                    .status(Status.FORBIDDEN)
+                    .build();
+        }
+        try {
+            String username = verifyToken(cookie.getValue());
+            Account acc = accountService.getAccount(username);
+            accountService.sendKweet(acc, body);
+            return Response
+                    .status(Status.NO_CONTENT)
+                    .build();
+        } catch (SignatureException se) {
+            return Response
+                    .status(Status.FORBIDDEN)
+                    .build();
+        }
+    }
+
     private Account authenticate(String username, String password) throws IllegalArgumentException {
         Account acc = accountService.getAccount(username);
         if (acc == null) {
@@ -100,9 +121,19 @@ public class AuthResource {
         return acc;
     }
 
-    public static void verifyToken(String token) throws SignatureException {
+    /**
+     * 
+     * @param token The token to be verified. 
+     * @return The token's subject. 
+     * @throws SignatureException 
+     */
+    public static String verifyToken(String token) throws SignatureException {
         String key = PropertiesProvider.getSecurityKey();
-        Jwts.parser().setSigningKey(key).parseClaimsJws(token);
+        return Jwts.parser()
+                .setSigningKey(key)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     private String issueToken(String username) {

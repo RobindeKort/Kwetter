@@ -78,13 +78,15 @@ public class AccountService {
         updateAccount(account1);
         updateAccount(account2);
     }
-
-    public void sendKweet(Account account, String kweetBody) {
-        Kweet kweet = new Kweet(account, kweetBody);
+    
+    public void sendKweet(Account account, Kweet kweet) {
         kweetService.createKweet(kweet);
-        // TODO - Check if kweet has been given an ID before adding it to user. 
         account.addKweet(kweet);
         updateAccount(account);
+    }
+
+    public void sendKweet(Account account, String kweetBody) {
+        this.sendKweet(account, new Kweet(account, kweetBody));
     }
 
     public Queue<Kweet> getFollowingKweets(Account account) {
