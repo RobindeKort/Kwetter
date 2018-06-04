@@ -24,7 +24,7 @@ public class AccountService {
 //    private UserDaoJpa userDao;
     private IAccountDao accountDao;
     @Inject
-    public KweetService kweetService;
+    private KweetService kweetService;
 
     public AccountService() {
 //        EntityManagerFactory emf = Persistence.createEntityManagerFactory("Kwet_JPA");
@@ -37,6 +37,10 @@ public class AccountService {
 //        this.userDao = userDao;
 //        this.kweetService = new KweetService(kweetDao);
 //    }
+    
+    public KweetService getKweetService() {
+        return this.kweetService;
+    }
 
     public void createAccount(Account account) {
         accountDao.createAccount(account);

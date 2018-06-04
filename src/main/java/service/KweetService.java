@@ -2,6 +2,8 @@ package service;
 
 import dal.IKweetDao;
 import domain.*;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -44,6 +46,12 @@ public class KweetService {
 
     public Kweet getKweet(Long id) {
         return kweetDao.getKweet(id);
+    }
+    
+    public Queue<Kweet> findKweets(String body) {
+        Queue<Kweet> kweets = new PriorityQueue();
+        kweets.addAll(kweetDao.getKweetsByBody(body));
+        return kweets;
     }
 
     public void likeKweet(Account user, Kweet kweet) {

@@ -1,11 +1,13 @@
 package dal;
 
 import domain.Kweet;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.enterprise.inject.Default;
 import javax.persistence.EntityExistsException;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.QueryTimeoutException;
 import javax.persistence.RollbackException;
 
@@ -123,6 +125,14 @@ public class KweetDaoJpa implements IKweetDao {
             throw new NullPointerException("Please provide a valid search term. ");
         }
         return ret;
+    }
+
+    @Override
+    public List<Kweet> getKweetsByBody(String partialBody) {
+        Query queryKweetsByBody = em.createNamedQuery("Kweet.findKweetsByBody");
+        queryKweetsByBody.setParameter("body", partialBody);
+        List<Kweet> kweets = queryKweetsByBody.getResultList();
+        return kweets;
     }
 
     /**

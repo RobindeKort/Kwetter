@@ -1,7 +1,9 @@
 package dal;
 
 import domain.Kweet;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,5 +40,17 @@ public class KweetDaoMem implements IKweetDao {
     @Override
     public Kweet getKweet(Long id) {
         return kweets.get(id);
+    }
+    
+    @Override
+    public List<Kweet> getKweetsByBody(String body) {
+        List<Kweet> ret = new ArrayList();
+        for (Long id : this.kweets.keySet()) {
+            Kweet k = this.kweets.get(id);
+            if (k.getBody().contains(body)) {
+                ret.add(k);
+            }
+        }
+        return ret;
     }
 }

@@ -12,6 +12,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -22,6 +24,10 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table
+@NamedQueries({
+    @NamedQuery(name = "Kweet.findKweetsByBody",
+            query = "SELECT k FROM Kweet k WHERE k.body LIKE CONCAT('%', :body, '%')")
+})
 public class Kweet implements Serializable, Comparable<Kweet> {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
