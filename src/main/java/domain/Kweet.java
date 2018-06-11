@@ -128,4 +128,9 @@ public class Kweet implements Serializable, Comparable<Kweet> {
         }
         return comp;
     }
+    
+    @Override
+    public String toString() {
+        return String.format("%1$s", this.body);
+    }
 }

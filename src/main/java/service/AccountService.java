@@ -83,14 +83,17 @@ public class AccountService {
         updateAccount(account2);
     }
     
-    public void sendKweet(Account account, Kweet kweet) {
+    public Kweet sendKweet(Account account, Kweet kweet) {
         kweetService.createKweet(kweet);
         account.addKweet(kweet);
         updateAccount(account);
+        return kweet;
     }
 
-    public void sendKweet(Account account, String kweetBody) {
-        this.sendKweet(account, new Kweet(account, kweetBody));
+    public Kweet sendKweet(Account account, String kweetBody) {
+        Kweet newKweet = new Kweet(account, kweetBody);
+        this.sendKweet(account, newKweet);
+        return newKweet;
     }
 
     public Queue<Kweet> getFollowingKweets(Account account) {

@@ -99,9 +99,10 @@ public class AuthResource {
         try {
             String username = verifyToken(cookie.getValue());
             Account acc = accountService.getAccount(username);
-            accountService.sendKweet(acc, body);
+            Kweet kweet = accountService.sendKweet(acc, body);
             return Response
-                    .status(Status.NO_CONTENT)
+                    .status(Status.OK)
+                    .entity(kweet)
                     .build();
         } catch (SignatureException se) {
             return Response
