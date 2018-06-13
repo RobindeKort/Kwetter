@@ -50,8 +50,9 @@ public class ApiEndpoint {
         // Handle received message
         Account sender = accountService.getAccount(username);
         for (Account following : sender.getFollowedBy()) {
-            if (SessionMapper.getInstance().getSessionMap().keySet().contains(following.getUserName())) {
-                SessionMapper.getInstance().getSessionMap().get(following.getUserName()).getAsyncRemote().sendText(message);
+            Session s = SessionMapper.getInstance().getSessionMap().get(following.getUserName());
+            if (s != null) {
+                s.getAsyncRemote().sendText(message);
             }
         }
     }

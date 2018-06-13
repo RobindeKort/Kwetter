@@ -2,8 +2,8 @@ package dto;
 
 import domain.Account;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Set;
 import rest.KwetterApplication;
 
 /**
@@ -23,7 +23,7 @@ public class AccountDTO implements Serializable {
     private String website;
     private String highestGroup;
     
-    private Map<String, String> urls;
+    private Set<String> urls;
     
     public AccountDTO(Account account) {
         this.id = account.getId();
@@ -36,8 +36,13 @@ public class AccountDTO implements Serializable {
         this.location = account.getLocation();
         this.website = account.getWebsite();
         this.highestGroup = account.getHighestGroup().toString();
-        this.urls = new HashMap();
-        this.urls.put("", KwetterApplication.BASE_ANG_URL + "/users/" + userName);
-        this.urls.put("", KwetterApplication.BASE_API_URL + "/users/" + userName);
+        this.urls = new HashSet();
+        //this.urls.put("", KwetterApplication.BASE_ANG_URL + "/users/" + userName);
+        this.urls.add(KwetterApplication.BASE_API_URL + "/users/" + userName);
+        this.urls.add(KwetterApplication.BASE_API_URL + "/users/" + userName + "/following");
+        this.urls.add(KwetterApplication.BASE_API_URL + "/users/" + userName + "/following/kweets");
+        this.urls.add(KwetterApplication.BASE_API_URL + "/users/" + userName + "/followedBy");
+        this.urls.add(KwetterApplication.BASE_API_URL + "/users/" + userName + "/kweets");
+        //this.urls.add(KwetterApplication.BASE_API_URL + "/auth/kweet");
     }
 }
